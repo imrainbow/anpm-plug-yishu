@@ -1,14 +1,238 @@
 <template>
-  <div>
-    <h1>Dashboard</h1>
+  <div class="dashboard-container">
+    <!-- 设置 -->
+    <div class="setting-panel">
+      <el-dropdown trigger="click">
+        <img
+          class="setting-panel-img"
+          src="@/assets/setting-panel.png"
+          alt=""
+        />
+
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="handleSystemManagement"
+              ><el-icon><Setting /></el-icon>系统管理</el-dropdown-item
+            >
+            <el-dropdown-item divided @click="handleLogout"
+              ><el-icon><SwitchButton /></el-icon>退出登录</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+    <!-- /设置 -->
+    <!-- 顶部logo -->
+    <img class="logo-panel" src="@/assets/images/logo.png" />
+    <!-- /顶部logo -->
+    <div class="dashboard-bg">
+      <!--  顶部title -->
+      <div class="title-panel"></div>
+      <!-- /顶部title -->
+      <!-- 左箭头 -->
+      <img
+        class="arrow-panel left-arrow-panel"
+        src="@/assets/images/left-arrow-panel.png"
+      />
+      <!-- /左箭头 -->
+      <!-- 右箭头 -->
+      <img
+        class="arrow-panel right-arrow-panel"
+        src="@/assets/images/right-arrow-panel.png"
+      />
+      <!-- /右箭头 -->
+      <!-- 左侧面板 -->
+      <div class="left-panel">
+        <div class="left-panel-item">1</div>
+        <div class="left-panel-item">2</div>
+      </div>
+      <!-- /左侧面板 -->
+      <!-- 中间面板 -->
+      <div class="middle-panel">
+        <div class="middle-panel-item">1</div>
+        <div class="middle-panel-item">2</div>
+        <div class="middle-panel-item">3</div>
+        <div class="middle-panel-item">4</div>
+      </div>
+      <!-- /中间面板 -->
+      <!-- 右侧面板 -->
+      <div class="right-panel">
+        <div class="right-panel-item">1</div>
+        <div class="right-panel-item">2</div>
+      </div>
+      <!-- /右侧面板 -->
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-
-}
+<script setup>
+import { SwitchButton } from '@element-plus/icons-vue' 
+import { useRouter } from "vue-router";
+const router = useRouter();
+const handleSystemManagement = () => {
+  router.push("/system-management");
+};
+const handleLogout = () => {
+  router.push("/login");
+};
 </script>
 
-<style>
+<style lang="less" scoped>
+.dashboard-container {
+  width: 100%;
+  height: 100vh;
+  background-image: url("@/assets/images/dashboard-bg.png");
+  background-position: center; // 图片居中显示
+  background-repeat: no-repeat; // 防止图片重复
+  background-size: 100% 100%; // 图片铺满整个容器
+  position: relative;
+  .setting-panel {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    .setting-panel-img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .logo-panel {
+    width: 9.89583333%;
+    height: 8.796296296%;
+    position: absolute;
+    top: 3.24074074%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .dashboard-bg {
+    width: 100%;
+    height: 78.507407%;
+    background-image: url("@/assets/images/dashboard-bg2.png");
+    background-position: center; // 图片居中显示
+    background-repeat: no-repeat; // 防止图片重复
+    background-size: 100% 100%; // 图片铺满整个容器
+    position: absolute;
+    top: 13.703704%;
+    left: 0;
+    .middle-panel {
+      position: absolute;
+      top: 22.64713874%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 41.6666667%;
+      height: 51.176487238%;
+      background: url("@/assets/images/middle-panel.png") no-repeat center
+        center;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      padding: 20px;
+      .middle-panel-item {
+        width: 21.052631578%;
+        height: 100%;
+        box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
+        background: rgba(73, 147, 251, 0.1);
+        transition: all 0.3s ease; // 添加过渡效果
+        cursor: pointer; // 添加手型光标
+
+        &:hover {
+          transform: scale(1.05); // 放大效果
+          box-shadow: inset 0px 0px 60px 0px rgba(108, 200, 255, 0.7); // 加强阴影效果
+        }
+      }
+    }
+    .left-panel {
+      position: absolute;
+      left: 3.123475%;
+      top: 17.92706515%;
+      width: 19.7917%;
+      height: 61.32943%;
+      background: url("@/assets/images/left-panel.png") no-repeat center;
+      background-size: 100% 100%;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+      justify-content: space-between;
+      align-items: center; // 底部对齐
+      .left-panel-item {
+        width: calc(50% - 10px);
+        height: 100%;
+        clip-path: polygon(0 0, 100% 3%, 100% 97%, 0 100%); // 创建梯形效果
+        box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
+        background: rgba(73, 147, 251, 0.1);
+        transition: all 0.3s ease; // 添加过渡效果
+        cursor: pointer; // 添加手型光标
+
+        &:hover {
+          transform: scale(1.05); // 放大效果
+          box-shadow: inset 0px 0px 60px 0px rgba(108, 200, 255, 0.7); // 加强阴影效果
+        }
+      }
+      .left-panel-item:last-child {
+        height: 93%;
+
+        // clip-path: polygon(0 0, 100% 3%, 100% 97%, 0 100%); // 创建梯形效果
+      }
+    }
+    .right-panel {
+      position: absolute;
+      right: 3.123475%;
+      top: 17.92706515%;
+      width: 19.7917%;
+      height: 61.32943%;
+      background: url("@/assets/images/right-panel.png") no-repeat center;
+      background-size: 100% 100%;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+      justify-content: space-between;
+      align-items: center; // 底部对齐
+      .right-panel-item {
+        width: calc(50% - 10px);
+        height: 100%;
+        clip-path: polygon(0 3%, 100% 0, 100% 100%, 0 97%); // 创建梯形效果
+        box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
+        background: rgba(73, 147, 251, 0.1);
+        transition: all 0.3s ease; // 添加过渡效果
+        cursor: pointer; // 添加手型光标
+
+        &:hover {
+          transform: scale(1.05); // 放大效果
+          box-shadow: inset 0px 0px 60px 0px rgba(108, 200, 255, 0.7); // 加强阴影效果
+        }
+      }
+      .right-panel-item:first-child {
+        height: 93%;
+        // clip-path: polygon(0 3%, 100% 0, 100% 100%, 0 97%); // 创建梯形效果
+      }
+    }
+
+    .title-panel {
+      position: absolute;
+      left: 50%;
+      top: 12.855582772%;
+      transform: translateX(-50%);
+      width: 36.25%;
+      height: 8.255885266%;
+      background: url("@/assets/images/title-panel.png") no-repeat center;
+    }
+    .arrow-panel {
+      width: 20.8333333%;
+      height: 5.897060904%;
+      position: absolute;
+      top: 13.855582772%;
+      z-index: 10;
+    }
+    .left-arrow-panel {
+      left: 6.123475%;
+    }
+    .right-arrow-panel {
+      right: 6.123475%;
+    }
+  }
+}
 </style>
