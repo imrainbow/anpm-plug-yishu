@@ -43,22 +43,46 @@
       <!-- /右箭头 -->
       <!-- 左侧面板 -->
       <div class="left-panel">
-        <div class="left-panel-item">1</div>
-        <div class="left-panel-item">2</div>
+        <div class="panel-itme left-panel-item">
+          <img src="@/assets/images/case-management.png" alt="案件管理" />
+          <span class="panel-itme-text">案件管理</span>
+        </div>
+        <div class="panel-itme left-panel-item">
+          <img src="@/assets/images/digital-model.png" alt="数字模型" />
+          <span class="panel-itme-text">数字模型</span>
+        </div>
       </div>
       <!-- /左侧面板 -->
       <!-- 中间面板 -->
       <div class="middle-panel">
-        <div class="middle-panel-item">1</div>
-        <div class="middle-panel-item">2</div>
-        <div class="middle-panel-item">3</div>
-        <div class="middle-panel-item">4</div>
+        <div class="panel-itme middle-panel-item">
+          <img src="@/assets/images/legal-search.png" alt="法律检索" />
+          <span class="panel-itme-text">法律检索</span>
+        </div>
+        <div class="panel-itme middle-panel-item" @click="handleAIHelp">
+          <img src="@/assets/images/AI-help.png" alt="AI辅助" />
+          <span class="panel-itme-text">AI辅助</span>
+        </div>
+        <div class="panel-itme middle-panel-item">
+          <img src="@/assets/images/check-cases.png" alt="检查办案" />
+          <span class="panel-itme-text">检察办案</span>
+        </div>
+        <div class="panel-itme middle-panel-item">
+          <img src="@/assets/images/featured-brands.png" alt="特色品牌" />
+          <span class="panel-itme-text">特色品牌</span>
+        </div>
       </div>
       <!-- /中间面板 -->
       <!-- 右侧面板 -->
       <div class="right-panel">
-        <div class="right-panel-item">1</div>
-        <div class="right-panel-item">2</div>
+        <div class="panel-itme right-panel-item">
+          <img src="@/assets/images/business-management.png" alt="业务管理" />
+          <span class="panel-itme-text">业务管理</span>
+        </div>
+        <div class="panel-itme right-panel-item">
+          <img src="@/assets/images/quality-assurance.png" alt="质量管理" />
+          <span class="panel-itme-text">质量管理</span>
+        </div>
       </div>
       <!-- /右侧面板 -->
     </div>
@@ -74,6 +98,9 @@ const handleSystemManagement = () => {
 };
 const handleLogout = () => {
   router.push("/login");
+};
+const handleAIHelp = () => {
+  router.push("/ai-help");
 };
 </script>
 
@@ -233,6 +260,17 @@ const handleLogout = () => {
     .right-arrow-panel {
       right: 6.123475%;
     }
+  }
+}
+.panel-itme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #61d3ff;
+  font-size: 26px;
+  .panel-itme-text {
+    margin-top: 30px;
   }
 }
 </style>
