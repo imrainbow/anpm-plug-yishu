@@ -43,11 +43,17 @@
       <!-- /右箭头 -->
       <!-- 左侧面板 -->
       <div class="left-panel">
-        <div class="panel-itme left-panel-item">
+        <div
+          class="panel-itme left-panel-item"
+          @click="gotoDetail('/case-management')"
+        >
           <img src="@/assets/images/case-management.png" alt="案件管理" />
           <span class="panel-itme-text">案件管理</span>
         </div>
-        <div class="panel-itme left-panel-item">
+        <div
+          class="panel-itme left-panel-item"
+          @click="gotoDetail('/digital-model')"
+        >
           <img src="@/assets/images/digital-model.png" alt="数字模型" />
           <span class="panel-itme-text">数字模型</span>
         </div>
@@ -67,7 +73,10 @@
           <img src="@/assets/images/check-cases.png" alt="检查办案" />
           <span class="panel-itme-text">检察办案</span>
         </div>
-        <div class="panel-itme middle-panel-item">
+        <div
+          class="panel-itme middle-panel-item"
+          @click="gotoDetail('/featured-brands')"
+        >
           <img src="@/assets/images/featured-brands.png" alt="特色品牌" />
           <span class="panel-itme-text">特色品牌</span>
         </div>
@@ -79,7 +88,10 @@
           <img src="@/assets/images/business-management.png" alt="业务管理" />
           <span class="panel-itme-text">业务管理</span>
         </div>
-        <div class="panel-itme right-panel-item">
+        <div
+          class="panel-itme right-panel-item"
+          @click="gotoDetail('/quality-assurance')"
+        >
           <img src="@/assets/images/quality-assurance.png" alt="质量管理" />
           <span class="panel-itme-text">质量管理</span>
         </div>
@@ -101,6 +113,9 @@ const handleLogout = () => {
 };
 const handleAIHelp = () => {
   router.push("/ai-help");
+};
+const gotoDetail = (path) => {
+  router.push(path);
 };
 </script>
 

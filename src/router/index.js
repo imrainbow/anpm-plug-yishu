@@ -24,7 +24,28 @@ const routes = [
     path: '/ai-help',
     name: 'ai-help',
     component: () => import('../views/ai-help/index.vue')
+  },
+  {
+    path: '/featured-brands',
+    name: 'featured-brands',
+    component: () => import('../views/featured-brands/index.vue')
+  },
+  {
+    path: '/quality-assurance',
+    name: 'quality-assurance',
+    component: () => import('../views/quality-assurance/index.vue')
+  },
+  {
+    path: '/case-management',
+    name: 'case-management',
+    component: () => import('../views/case-management/index.vue')
+  },
+  {
+    path: '/digital-model',
+    name: 'digital-model',
+    component: () => import('../views/digital-model/index.vue')
   }
+
 
 ]
 

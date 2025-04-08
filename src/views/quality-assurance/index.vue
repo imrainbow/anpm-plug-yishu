@@ -1,7 +1,7 @@
 <template>
   <div class="ai-help-container">
     <div class="ai-help-header">
-      <div class="header-left">AI辅助</div>
+      <div class="header-left">质量管理</div>
       <div class="header-right" @click="handleReturn">
         <img src="@/assets/return.png" alt="返回" />
       </div>
@@ -181,33 +181,4 @@ const handleReturn = () => {
 </script>
 
 <style lang="less" scoped>
-.ai-help-container {
-  background-color: #f5f8fc;
-  padding: 20px;
-  height: 100vh;
-  box-sizing: border-box;
-  .ai-help-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    height: 80px;
-    background-color: #fff;
-    height: 80px;
-    border-radius: 6px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); // 添加柔和的阴影效果
-    .header-right {
-      img {
-        height: 40px;
-      }
-    }
-    .header-left {
-      font-size: 24px;
-      font-weight: bold;
-    }
-  }
-}
-.ai-help-content {
-  margin-top: 20px;
-}
 </style>
