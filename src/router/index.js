@@ -81,8 +81,17 @@ const routes = [
     path: '/legal-search',
     name: 'legal-search',
     component: () => import('../views/legal-search/index.vue')
+  },
+  {
+    path: '/business-management',
+    name: 'business-management',
+    component: () => import('../views/business-management/index.vue')
+  },
+  {
+    path: '/case-card',
+    name: 'case-card',
+    component: () => import('../views/business-management/case-card.vue')
   }
-
 
 ]
 

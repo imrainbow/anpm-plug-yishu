@@ -45,7 +45,7 @@
       <div class="left-panel">
         <div
           class="panel-itme left-panel-item"
-          @click="gotoDetail('/case-management')"
+          @click="gotoDetail('/business-management')"
         >
           <img src="@/assets/images/case-management.png" alt="案件管理" />
           <span class="panel-itme-text">案件管理</span>
@@ -90,7 +90,10 @@
       <!-- /中间面板 -->
       <!-- 右侧面板 -->
       <div class="right-panel">
-        <div class="panel-itme right-panel-item">
+        <div
+          class="panel-itme right-panel-item"
+          @click="gotoDetail('/case-management')"
+        >
           <img src="@/assets/images/business-management.png" alt="业务管理" />
           <span class="panel-itme-text">业务管理</span>
         </div>
