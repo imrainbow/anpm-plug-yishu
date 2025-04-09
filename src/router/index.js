@@ -18,7 +18,34 @@ const routes = [
   {
     path: '/system-management',
     name: 'system-management',
-    component: () => import('../views/system-management/index.vue')
+    component: () => import('../views/system-management/index.vue'),
+    children: [
+      {
+        path: 'file-upload',
+        name: 'file-upload',
+        component: () => import('../views/system-management/file-upload.vue'),
+        meta: {
+          title: '文件管理'
+        }
+      },
+      {
+        path: 'upload-records',
+        name: 'upload-records',
+        component: () => import('../views/system-management/upload-records.vue'),
+        meta: {
+          title: '操作记录'
+        }
+      },
+      {
+        path: 'user-management',
+        name: 'user-management',
+        component: () => import('../views/system-management/user-management.vue'),
+        meta: {
+          title: '用户管理'
+        }
+      }
+
+    ]
   },
   {
     path: '/ai-help',

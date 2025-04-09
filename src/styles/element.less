@@ -47,3 +47,67 @@
 // .el-main {
 //   background-color:rgb(109,151,199);
 // }
+.el-button {
+  height: 40px;
+  padding: 8px 20px;
+  position: relative;
+  border: none; // 移除原始边框
+  background: linear-gradient(to right, #2d5dbb, #1a3873) padding-box,
+              linear-gradient(to right, #2d5dbb, #1a3873) border-box;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid transparent;
+    background: linear-gradient(to right, #2d5dbb, #1a3873) border-box;
+    -webkit-mask: 
+       linear-gradient(#fff 0 0) padding-box, 
+       linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    border-radius: 4px; // 如果按钮有圆角，这里也要设置相同的值
+   
+  }
+  &:hover {
+    background: linear-gradient(to right, #2d5dbb, #1a3873) padding-box,
+            linear-gradient(to right, #2d5dbb, #1a3873) border-box;
+              color: #61D3FF;
+  }
+}
+.el-dialog {
+  padding: unset;
+  .el-dialog__header {
+    background-color: #1a3873;
+    padding-top: 14px;
+    
+    color: #61d3ff;
+    .el-dialog__title {
+      color: #61d3ff;
+      margin-left: 10px;
+      margin-top: 10px;
+
+    }
+  }
+  .el-dialog__body {
+    padding: 20px;
+    
+  }
+  .el-dialog__footer {
+    padding: 20px;
+  }
+  .el-dialog__headerbtn .el-dialog__close {
+    color: #61d3ff;
+  }
+  .btn-cancel {
+    background: transparent !important;
+    border: 1px solid #1a3873 ;
+    color: #1a3873;
+    &:hover {
+      color: #2d5dbb;
+    }
+  }
+}
