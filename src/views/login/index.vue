@@ -18,7 +18,9 @@
           ></el-input>
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="login-button">登录</el-button>
+      <el-button type="primary" class="login-button" @click="handleLogin"
+        >登录</el-button
+      >
     </div>
     <!-- /登录面板 -->
     <!-- logo标题 -->
@@ -31,13 +33,51 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue' 
+import { ref, reactive } from 'vue'
+import { User, Lock } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+import { login } from '@/api/user'
+import store from '@/store'
+const router = useRouter()
+const loginFormRef = ref(null)
 
 const loginForm = ref({
   username: '',
   password: ''
 })
+const rules = reactive({
+  username: [
+    { required: true, message: '请输入账号', trigger: 'blur' },
+    { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+  ],
+})
+// 登录方法
+const handleLogin = async () => {
+  try {
+    await loginFormRef.value.validate(async (valid) => {
+      if (valid) {
+        // 这里调用登录接口
+        const res = await login({
+          username: loginForm.value.username,
+          password: loginForm.value.password
+        })
+        
+        if (res.success) {
+          ElMessage.success('登录成功')
+          // 将token存入vuex
+          const token = res.data.token
+          store.commit('user/SET_TOKEN', token)
+
+          // 登录成功后跳转到首页
+          router.push('/dashboard')
+        }
+      }
+    })
+  } catch (error) {
+    console.error('登录失败：', error)
+  }
+}
 
 </script>
 
