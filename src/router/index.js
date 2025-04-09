@@ -44,6 +44,16 @@ const routes = [
     path: '/digital-model',
     name: 'digital-model',
     component: () => import('../views/digital-model/index.vue')
+  },
+  {
+    path: '/check-cases',
+    name: 'check-cases',
+    component: () => import('../views/check-cases/index.vue')
+  },
+  {
+    path: '/legal-search',
+    name: 'legal-search',
+    component: () => import('../views/legal-search/index.vue')
   }
 
 

@@ -61,7 +61,10 @@
       <!-- /左侧面板 -->
       <!-- 中间面板 -->
       <div class="middle-panel">
-        <div class="panel-itme middle-panel-item">
+        <div
+          class="panel-itme middle-panel-item"
+          @click="gotoDetail('/legal-search')"
+        >
           <img src="@/assets/images/legal-search.png" alt="法律检索" />
           <span class="panel-itme-text">法律检索</span>
         </div>
@@ -69,7 +72,10 @@
           <img src="@/assets/images/AI-help.png" alt="AI辅助" />
           <span class="panel-itme-text">AI辅助</span>
         </div>
-        <div class="panel-itme middle-panel-item">
+        <div
+          class="panel-itme middle-panel-item"
+          @click="gotoDetail('/check-cases')"
+        >
           <img src="@/assets/images/check-cases.png" alt="检查办案" />
           <span class="panel-itme-text">检察办案</span>
         </div>
@@ -261,6 +267,7 @@ const gotoDetail = (path) => {
       width: 36.25%;
       height: 8.255885266%;
       background: url("@/assets/images/title-panel.png") no-repeat center;
+      background-size: 100% 100%;
     }
     .arrow-panel {
       width: 20.8333333%;

@@ -60,17 +60,7 @@ a {
     z-index: 1;
 }
 
-.login-container {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    width: 400px;
-    position: relative;
-    z-index: 10; /* 确保在遮罩之上 */
-    overflow: hidden;
-    margin-right: 10%; /* 添加右侧边距 */
-    animation: slideInRight 0.8s ease-out; /* 添加从右侧滑入的动画 */
-}
+
 
 /* 添加动画关键帧 */
 @keyframes slideInRight {
