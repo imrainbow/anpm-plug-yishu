@@ -17,6 +17,11 @@ const mutations = {
         } else {
             sessionStorage.removeItem('token')
         }
+    },
+    // 删除用户
+    DELETE_USER: (state) => {
+        state.token = ''
+        sessionStorage.removeItem('token')
     }
 }
 export default {

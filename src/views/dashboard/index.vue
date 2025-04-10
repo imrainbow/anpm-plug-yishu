@@ -113,12 +113,16 @@
 <script setup>
 import { SwitchButton } from '@element-plus/icons-vue' 
 import { useRouter } from "vue-router";
+import { useStore } from 'vuex'
 const router = useRouter();
+const store = useStore()
 const handleSystemManagement = () => {
   router.push("/system-management");
 };
 const handleLogout = () => {
+  store.commit('user/DELETE_USER')
   router.push("/login");
+
 };
 const handleAIHelp = () => {
   router.push("/ai-help");
