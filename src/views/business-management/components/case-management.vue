@@ -1,5 +1,5 @@
 <template>
-  <div class="case-management page-container">
+  <div class="case-management page-container" style="padding: 0">
     <!-- 顶部 -->
     <div class="case-management-header page-header">
       <div class="header-right">

@@ -29,7 +29,12 @@
       </div>
     </div>
     <div class="case-card-content">
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column type="index" label="序号" width="80" />
         <el-table-column prop="batch_no" label="通报批次" />
         <el-table-column prop="department_no" label="部门受案号" />
@@ -81,6 +86,7 @@
       title="新增"
       width="50%"
       destroy-on-close
+      @close="resetForm"
     >
       <el-form :model="form" label-width="120px">
         <el-form-item label="通报批次">
@@ -145,7 +151,22 @@ const form = ref({
   error_details: '',
   remarks: ''
 })
+const loading = ref(false);
+const resetForm = () => {
+  form.value = {
+    ID: null,
+  batch_no: '',
+  department_no: '',
+  case_name: '',
+  suspect_name: '',
+  handling_dept: '',
+  prosecutor: '',
+  case_type: '',
+  error_details: '',
+  remarks: ''
 
+  }
+}
 
 
 const handleReturn = () => {
@@ -205,13 +226,14 @@ const handleFileChange = (file) => {
 // };
 // 获取案卡列表
 const getCasesList = async () => {
+  loading.value = true;
   const res = await getCases(page.value);
   console.log(res);
   if (res.success) {
     tableData.value = res.data.records
     total.value = res.data.total
   }
-
+  loading.value = false;
 }
 // 新增
 const handleAdd = async () => {
@@ -275,31 +297,7 @@ const handleSave = async () => {
 
 onMounted(() => {
   getCasesList();
-//   模拟数据
-tableData.value = [
-    {
-        batch: '2024年第一次',
-        caseNumber: '黟检未起诉受[2023]3410号',
-        caseName: '姚嘉宾强奸、猥亵儿童案',
-        suspectName: '姚嘉宾',
-        department: '第一检察部',
-        prosecutor: '鲍平',
-        caseType: '一审公诉案件（未检）',
-        errorDetails: '裁判认定法定情节与审查认定法定情节不一致(裁判改变起诉情形中未填“改变量刑情节”)等漏填（错填）',
-        remarks: '',
-    },
-     {
-        batch: '2024年第二次',
-        caseNumber: '黟检刑诉受[2023]341023000062号',
-        caseName: '陈军民、公保才仁等9人开设赌场案',
-        suspectName: '陈军民',
-        department: '第一检察部',
-        prosecutor: '程凤',
-        caseType: '一审公诉案件',
-        errorDetails: '法院已采纳确定型有期徒刑量刑建议、一审宣告刑刑期（刑种）与审查起诉量刑建议刑期（刑种）不一致等错填',
-        remarks: '',
-    }
-]
+
 });
 </script>
 
