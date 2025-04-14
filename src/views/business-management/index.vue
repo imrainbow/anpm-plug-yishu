@@ -23,7 +23,7 @@
                   <a
                     href="javascript:;"
                     class="module-card-link"
-                    @click="handleClick('/case-card')"
+                    @click="handleClick('/property-management')"
                     >查看表格</a
                   >
                 </div>

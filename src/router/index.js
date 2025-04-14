@@ -132,6 +132,14 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/property-management',
+    name: 'property-management',
+    component: () => import('@/views/business-management/property-management.vue'),
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 

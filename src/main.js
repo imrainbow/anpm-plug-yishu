@@ -6,7 +6,8 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@/styles/index.less'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import './permission'
+// 注释权限
+// import './permission'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
