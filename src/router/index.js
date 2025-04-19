@@ -12,6 +12,16 @@ const systemManagementRoutes = [
     }
   },
   {
+    path: 'ppt-menu',
+    name: 'ppt-menu',
+    component: () => import('@/views/system-management/ppt-menu.vue'),
+    meta: {
+      title: 'PPT菜单管理',
+      requiresAuth: true
+    }
+  },
+
+  {
     path: 'upload-records',
     name: 'upload-records',
     component: () => import('@/views/system-management/upload-records.vue'),
@@ -137,6 +147,15 @@ const routes = [
     path: '/property-management',
     name: 'property-management',
     component: () => import('@/views/business-management/property-management.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+
+  {
+    path: '/ppt-page',
+    name: 'ppt-page',
+    component: () => import('@/views/ppt-page/index.vue'),
     meta: {
       requiresAuth: true
     }

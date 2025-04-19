@@ -34,6 +34,7 @@
         border
         style="width: 100%"
         v-loading="loading"
+        height="calc(100vh - 280px)"
       >
         <el-table-column type="index" label="序号" width="80" />
         <el-table-column prop="batch_no" label="通报批次" />
@@ -133,6 +134,7 @@
 import { useRouter } from 'vue-router';
 import { Download, Upload, Edit, Delete,Plus } from '@element-plus/icons-vue';
 import { utils, writeFile } from 'xlsx'
+import * as XLSX from 'xlsx'
 import { ref, onMounted, reactive } from 'vue';
 import { getCases,batchCreateCases,createCase,editCase,deleteCase } from '@/api/case-card';
 import { ElMessage,ElMessageBox } from 'element-plus';
@@ -215,7 +217,73 @@ const handleDownloadTemplate = () => {
 }
 // 上传Excel        
 const handleFileChange = (file) => {
-  console.log(file);
+    console.log(file);
+   try {
+    // 1. 读取文件
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      try {
+        // 2. 解析Excel数据
+        const data = e.target.result
+        const workbook = XLSX.read(data, { type: 'array' })
+        const firstSheetName = workbook.SheetNames[0]
+        const worksheet = workbook.Sheets[firstSheetName]
+        
+        // 3. 将Excel数据转换为JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+        console.log(jsonData, 'jsonData');
+        debugger
+        
+        // 4. 处理数据
+        const headers = [
+          'batch_no',
+          'department_no',
+          'case_name',
+          'suspect_name',
+          'handling_dept',
+          'prosecutor',
+          'case_type',
+          'error_details',
+          'remarks'
+        ]
+        
+        // 跳过表头，处理数据行
+        const processedData = jsonData.slice(1).map(row => {
+          const item = {}
+          headers.forEach((header, index) => {
+            item[header] = row[index] || '' // 如果值不存在，设置为空字符串
+          })
+          return item
+        })
+
+        // 5. 数据验证
+        if (processedData.length === 0) {
+          ElMessage.warning('Excel文件中没有数据')
+          return
+        }
+
+        // 6. 调用批量创建API
+        const res = await batchCreateCases(processedData)
+        if (res.success) {
+          ElMessage.success('数据导入成功')
+          // 刷新表格数据
+          getCasesList()
+        } else {
+          ElMessage.error(res.message || '数据导入失败')
+        }
+      } catch (error) {
+        console.error('处理Excel文件失败：', error)
+        ElMessage.error('处理Excel文件失败')
+      }
+    }
+    
+    // 开始读取文件
+    reader.readAsArrayBuffer(file.raw)
+  } catch (error) {
+    console.error('文件上传失败：', error)
+    ElMessage.error('文件上传失败')
+  }
+
 };
 // // 编辑
 // const handleEdit = (row) => {
@@ -243,6 +311,8 @@ const handleAdd = async () => {
      dialogVisible.value = false;
      ElMessage.success('新增成功');
   getCasesList();
+  }else{
+    ElMessage.error('新增失败');
   }
   console.log(res);
 } 
@@ -262,10 +332,11 @@ const handleDeleteClick = (row) => {
 }
 const handleSizeChange = (size) => {
   page.value.pageSize = size;
+  page.value.page = 1;
   getCasesList();
 }
-const handleCurrentChange = (page) => {
-  page.value.page = page;
+const handleCurrentChange = (pageNo) => {
+  page.value.page = pageNo;
   getCasesList();
 }
 // 编辑
@@ -282,6 +353,8 @@ const handleEdit = async () => {
     dialogVisible.value = false;
     ElMessage.success('编辑成功');
     getCasesList();
+  }else{
+    ElMessage.error('编辑失败');
   }
 }
 const handleSave = async () => {

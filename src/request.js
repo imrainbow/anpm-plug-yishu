@@ -4,7 +4,7 @@ import store from './store'
 
 const request = axios.create({
     baseURL: '/api',
-    timeout: 5000,
+    timeout: 1000 * 60 * 2,
 })
 
 // 添加请求拦截器
@@ -43,6 +43,7 @@ request.interceptors.response.use(
         }
     },
     (error) => {
+        debugger
         ElMessage.error(error.message || '请求失败')
         return {
             success: false,

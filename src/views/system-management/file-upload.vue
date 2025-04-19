@@ -1,10 +1,7 @@
 <template>
   <div class="file-upload">
     <div class="file-upload-header">
-      <el-button
-        type="primary"
-        :icon="UploadFilled"
-        @click="dialogVisible = true"
+      <el-button type="primary" :icon="UploadFilled" @click="uploadClick"
         >上传</el-button
       >
     </div>
@@ -14,7 +11,7 @@
         <el-table-column type="index" label="序号" />
         <el-table-column prop="name" label="标题" />
         <el-table-column prop="size" label="模块" />
-        <el-table-column prop="type" label="描述" />
+
         <el-table-column prop="type" label="操作" />
       </el-table>
       <!-- /文件列表 -->
@@ -26,19 +23,15 @@
         <el-form-item label="标题" placeholder="请输入标题" prop="title">
           <el-input v-model="form.title" />
         </el-form-item>
-        <el-form-item label="选择模块" prop="module">
-          <el-select v-model="form.module" placeholder="请选择对应模块">
-            <el-option
-              v-for="item in modalOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+        <el-form-item label="选择模块" prop="menu_id">
+          <el-tree-select
+            v-model="form.menu_id"
+            :data="modalOptions"
+            :render-after-expand="true"
+            :props="defaultProps"
+          />
         </el-form-item>
-        <el-form-item label="描述" placeholder="请输入描述" prop="description">
-          <el-input type="textarea" :rows="3" v-model="form.description" />
-        </el-form-item>
+
         <el-form-item label="选择文件" prop="file">
           <el-upload
             class="upload-demo"
@@ -73,12 +66,14 @@
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { getPptMenuList } from '@/api/ppt-menu'
+import { uploadFillFile } from '@/api/fill-upload'
+import { ElMessage } from 'element-plus'
 
 const dialogVisible = ref(false)
 const form = ref({
   title: '',
-  module: '',
-  description: '',
+  menu_id: '',
   file: ''
 })
 // 表单校验规则
@@ -90,10 +85,7 @@ const rules = {
   module: [
     { required: true, message: '请选择模块', trigger: 'change' }
   ],
-  description: [
-    { required: true, message: '请输入描述', trigger: 'blur' },
-    { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
-  ],
+ 
   file: [
     { required: true, message: '请选择文件', trigger: 'change' }
   ]
@@ -101,24 +93,13 @@ const rules = {
 const fileList = ref([])
 const formRef = ref(null)
 // 模块选择下拉框配置
-const modalOptions = ref([
-  {
-    label: '数字模型',
-    value: 0
-  },
-  {
-    label: '特色品牌',
-    value: 1
-  },
-  {
-    label: '业务管理',
-    value: 2
-  },
-  {
-    label: '质量管理',
-    value: 3
-  }
-])
+const modalOptions = ref([])
+const defaultProps = {
+  children: 'children',
+  label: 'name',
+  value: 'id'
+}
+
 // 上传前验证
 const beforeUpload = (file) => {
 
@@ -140,6 +121,7 @@ const beforeUpload = (file) => {
 // 文件选择变化时的处理
 const handleFileChange = (file) => {
   fileList.value = [file]
+
   // 如果标题为空，则使用文件名作为标题
   if (form.value.title === '') {
     // 获取文件名（不包含扩展名）
@@ -153,11 +135,46 @@ const handleSubmit = async () => {
   if (!formRef.value) return
   
   try {
-    await formRef.value.validate()
+    await handleUploadAsync()
+   
     
     
   } catch (error) {
     console.error('表单验证失败', error)
+  }
+}
+const handleUploadAsync = async() => {
+  // 创建 FormData 对象
+  const formData = new FormData()
+  
+  // 添加文件
+  if (fileList.value.length > 0) {
+    const file = fileList.value[0].raw  // 使用 raw 属性获取原始文件对象
+    formData.append('file', file)
+  } else {
+    ElMessage.error('请选择文件')
+    return
+  }
+
+  // 添加标题
+  formData.append('title', form.value.title)
+  
+  // 添加菜单ID（从form.module获取，因为我们之前用tree-select选择的就是menu_id）
+  formData.append('menu_id', form.value.menu_id)
+
+  try {
+    const res = await uploadFillFile(formData)
+    console.log(res)
+    if (res.success) {
+      ElMessage.success('上传成功')
+      dialogVisible.value = false
+      handleClose()  // 重置表单
+    } else {
+      ElMessage.error(res.message || '上传失败')
+    }
+  } catch (error) {
+    console.error('上传失败', error)
+    ElMessage.error('上传失败')
   }
 }
 // 关闭对话框时重置表单
@@ -171,6 +188,15 @@ const handleClose = () => {
     file: ''
   }
   dialogVisible.value = false
+}
+const getPptMenuListAsync = async() => {
+  const res = await getPptMenuList()
+  modalOptions.value = res.data
+ 
+}
+const uploadClick = async() => {
+  await getPptMenuListAsync()
+  dialogVisible.value = true
 }
 
 </script>
