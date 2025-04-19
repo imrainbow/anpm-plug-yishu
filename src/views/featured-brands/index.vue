@@ -25,8 +25,8 @@
 </template>
 
 <script setup>
-import { ref, defineAsyncComponent, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, defineAsyncComponent, onMounted,onBeforeMount } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 import { getFilesByMenuID } from '@/api/ppt-page';
 import { getPptMenuList } from '@/api/ppt-menu';
@@ -35,6 +35,8 @@ const PptCard = defineAsyncComponent(() =>
   import('@/components/PptCard.vue')
 )
 const router = useRouter();
+const route = useRoute()
+
 const queryData = ref({
   menu_id: 9,
   page: 1,
@@ -51,9 +53,11 @@ const activeId = ref(9);
 const secondMenu = ref([]);
 const handleSecondMenu = () => {
   // debugger
+  console.log(queryData.value.menu_id, 'queryData.value.menu_id');
   console.log(pptMenuList.value, 'pptMenuList');
-  const menuObj = pptMenuList.value.find(item => item.id === queryData.value.menu_id);
-  console.log(menuObj.children, 'menuObj');
+  const menuObj = pptMenuList.value.find(item => item.id == queryData.value.menu_id);
+  // console.log(menuObj.children, 'menuObj');
+
   if (menuObj.children && menuObj.children.length > 0) {
     secondMenu.value = menuObj.children;
     activeId.value = secondMenu.value[0].id;
@@ -71,8 +75,14 @@ const handleTabClick = async () => {
   queryData.value.menu_id = activeId.value;
   await getFilesByMenuIDAsync();
 }
-
+onBeforeMount(async () => {
+  const id = route.query.id
+  queryData.value.menu_id = id
+  
+})
 onMounted(async () => {
+  const id = route.query.id
+  queryData.value.menu_id = id
   await getPptMenuListAsync();
   await getFilesByMenuIDAsync();
 })

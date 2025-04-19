@@ -6,9 +6,18 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/meshesha/PPTXjs@2.4.0/dist/pptxjs.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/meshesha/PPTXjs@2.4.0/dist/pptxjs.css">
+     <!-- jQuery是PPTXJS的必要依赖 -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+     <!-- 引入项目中的PPTXJS包 -->
+     <link rel="stylesheet" href="/PPTXJS-1.21.1/css/pptxjs.css">
+     <script src="/PPTXJS-1.21.1/js/jszip.min.js"></script>
+     <script src="/PPTXJS-1.21.1/js/filereader.js"></script>
+     <script src="/PPTXJS-1.21.1/js/pptxjs.js"></script>
+     
+     <!-- 可选：PPTXJS的其他组件 -->
+     <script src="/PPTXJS-1.21.1/js/divs2slides.js"></script>
+     <script src="/PPTXJS-1.21.1/js/jquery.fullscreen.js"></script>
   </head>
   <body>
     <noscript>

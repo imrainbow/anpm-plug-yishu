@@ -33,7 +33,7 @@ const props = defineProps({
 const router = useRouter();
 const handleClick = (id) => {
   router.push({
-    path: '/ppt-page',
+    path: '/ppt-page-detail',
     query: { id }
   })
 }

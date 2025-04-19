@@ -155,6 +155,14 @@ const routes = [
   {
     path: '/ppt-page',
     name: 'ppt-page',
+    component: () => import('@/views/featured-brands/index.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/ppt-page-detail',
+    name: 'ppt-page-detail',
     component: () => import('@/views/ppt-page/index.vue'),
     meta: {
       requiresAuth: true
