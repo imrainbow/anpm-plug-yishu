@@ -22,6 +22,7 @@
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
+
 // 使用 defineProps 接收父组件传递的数据
 const props = defineProps({
   files: {

@@ -1,11 +1,22 @@
 <template>
-  <div class="ppt-page">
-    <div class="return-btn" @click="handleReturn">
+  <div class="ai-help-container help-container ppt-page">
+    <div
+      :class="
+        secondMenu.length <= 1 ? 'return-btn one-tab-return' : 'return-btn'
+      "
+      @click="handleReturn"
+    >
       <img src="@/assets/return.png" alt="返回" />
     </div>
     <div v-if="secondMenu.length <= 1">
       <div class="ai-help-header">
         <div class="header-left">特色品牌</div>
+      </div>
+      <div class="ppt-card-container">
+        <PptCard v-if="filesList.length > 0" :files="filesList" />
+        <div class="no-data-container" v-else>
+          <NoData />
+        </div>
       </div>
     </div>
     <div v-else>
@@ -17,7 +28,9 @@
           :name="item.id"
         >
           <PptCard v-if="filesList.length > 0" :files="filesList" />
-          <div v-else>暂无数据</div>
+          <div class="no-data-container" v-else>
+            <NoData />
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -33,6 +46,9 @@ import { getPptMenuList } from '@/api/ppt-menu';
 // 使用异步组件
 const PptCard = defineAsyncComponent(() => 
   import('@/components/PptCard.vue')
+)
+const NoData = defineAsyncComponent(() => 
+  import('@/components/NoData.vue')
 )
 const router = useRouter();
 const route = useRoute()
