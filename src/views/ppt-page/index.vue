@@ -1,188 +1,134 @@
 <template>
-  <div class="ppt-viewer">
-    <div class="loading-wrapper" v-if="loading">
-      <el-loading text="PPT加载中..." />
+  <div :class="fullScreen ? 'full-page' : 'ppt-page'">
+    <div class="fixed-box" v-if="!fullScreen">
+      <el-tooltip class="box-item" content="返回" placement="left">
+        <img
+          class="btn-fixed"
+          @click="handleReturn"
+          src="@/assets/return-circle.png"
+          alt=""
+        />
+      </el-tooltip>
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="全屏播放"
+        placement="left"
+      >
+        <img
+          class="btn-fixed"
+          src="@/assets/full-screen.png"
+          @click="fullScreen = !fullScreen"
+          alt=""
+        />
+      </el-tooltip>
     </div>
 
-    <div v-if="error" class="error-message">
-      <el-alert :title="error" type="error" show-icon />
-    </div>
-
-    <!-- PPT预览容器 -->
-    <div class="pptx-container" v-show="!loading && !error">
-      <div id="pptx-viewer" ref="pptxViewer"></div>
-    </div>
+    <template v-if="!fullScreen">
+      <div v-for="item in imgUrlList" :key="item">
+        <img
+          class="ppt-item-img"
+          :src="`http://192.168.1.119:8000${item}`"
+          alt=""
+        />
+      </div>
+    </template>
+    <template style="width: 100%" v-else>
+      <img
+        class="ppt-item-img-full"
+        :src="`http://192.168.1.119:8000${activeUrl}`"
+        @click="handleImgClick"
+        alt=""
+        style="width: 100%"
+      />
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { getFile } from '@/api/ppt-file'
+import { ref, onMounted, onBeforeMount } from 'vue'
+import { previewPPT } from '@/api/ppt-page'
 import { ElMessage } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
-const loading = ref(true)
-const error = ref('')
-
-// 加载必要的脚本
-const loadScript = (src) => {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script')
-    script.src = src
-    script.onload = resolve
-    script.onerror = () => reject(new Error(`Failed to load script: ${src}`))
-    document.head.appendChild(script)
-  })
+const pptPage = ref(null)
+const pptPageData = ref(null)
+const pptId = ref(null)
+const imgUrlList = ref([])
+const activeUrl = ref(null)
+const fullScreen = ref(false)
+const currentIndex = ref(0)
+const router = useRouter()
+const handleReturn = () => {
+  router.back()
 }
 
-// 加载样式
-const loadStyle = (href) => {
-  return new Promise((resolve, reject) => {
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = href
-    link.onload = resolve
-    link.onerror = () => reject(new Error(`Failed to load style: ${href}`))
-    document.head.appendChild(link)
-  })
-}
+// 获取ppt预览信息
+const previewPPTAsync = async () => {
+  const res = await previewPPT(pptId.value)
+  console.log(res)
+  if(res.success) {
+     imgUrlList.value = res.data.image_urls
+     activeUrl.value = imgUrlList.value[0]
 
-// 等待 PPTXJS 相关资源加载完成
-const waitForPPTXJS = () => {
-  return new Promise((resolve, reject) => {
-    let attempts = 0
-    const maxAttempts = 50
-
-    const check = () => {
-      if (window.jQuery && window.jQuery.fn.pptxToHtml) {
-        resolve(true)
-        return
-      }
-
-      attempts++
-      if (attempts >= maxAttempts) {
-        reject(new Error('加载PPT预览组件超时'))
-        return
-      }
-
-      setTimeout(check, 100)
-    }
-
-    check()
-  })
-}
-
-// 渲染PPT
-const renderPPT = async (data) => {
-  try {
-    // 等待 PPTXJS 加载完成
-    await waitForPPTXJS()
-
-    // 获取容器
-    const container = document.getElementById('pptx-viewer')
-    if (!container) {
-      throw new Error('找不到PPT预览容器')
-    }
-
-    // 创建 Blob
-    const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-    })
-
-    // 使用 jQuery 渲染 PPT
-    const $container = window.jQuery('#pptx-viewer')
-    $container.empty() // 清空容器
-
-    $container.pptxToHtml({
-      pptxFileUrl: URL.createObjectURL(blob),
-      slidesScale: '100%',
-      slideMode: true,
-      keyBoardShortCut: true,
-      mediaProcess: true,
-      shortMediaProcess: true,
-      width: '100%',
-      height: '100%',
-      success: function() {
-        loading.value = false
-        ElMessage.success('PPT加载成功')
-      },
-      error: function(err) {
-        throw new Error(`PPT渲染错误: ${err}`)
-      }
-    })
-  } catch (err) {
-    console.error('PPT渲染失败:', err)
-    error.value = err.message
-    loading.value = false
-    ElMessage.error('PPT渲染失败')
+  }else {
+    ElMessage.error(res.message)
   }
+ 
+ 
 }
+const handleImgClick = (url) => {
+  currentIndex.value++
+  if (currentIndex.value === imgUrlList.value.length) {
+    ElMessage.success('ppt播放结束')
+    fullScreen.value = false
+    currentIndex.value = 0
 
-// 初始化：加载资源并获取PPT文件
-const initialize = async () => {
-  try {
-    // 加载必要的资源
-
-    // 获取PPT文件
-    const res = await getFile(route.query.id)
-    
-    // 确保返回的是 ArrayBuffer
-    const arrayBuffer = res instanceof ArrayBuffer ? res : await res.arrayBuffer()
-    
-    // 渲染PPT
-    await renderPPT(arrayBuffer)
-  } catch (err) {
-    console.error('初始化失败:', err)
-    error.value = '加载PPT失败'
-    loading.value = false
-    ElMessage.error('加载PPT失败')
+  }else {
+    activeUrl.value = imgUrlList.value[currentIndex.value]
   }
+  
+
 }
 
-onMounted(() => {
-  initialize()
+onBeforeMount(() => {
+  pptId.value = route.query.id
 })
+onMounted(() => {
+  previewPPTAsync()
+})
+
 </script>
 
-<style scoped>
-.ppt-viewer {
-  width: 100%;
+<style lang="less" scoped>
+.full-page {
   height: 100vh;
-  position: relative;
-  background: #f5f7fa;
-}
-
-.loading-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-}
-
-.error-message {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  width: 80%;
-}
-
-.pptx-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background: white;
   overflow: hidden;
 }
-
-#pptx-viewer {
+.ppt-page {
+  width: 100%;
+  .ppt-item-img {
+    width: 100%;
+  }
+}
+.ppt-item-img-full {
   width: 100%;
   height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+}
+.btn-fixed {
+  width: 45px;
+  height: 45px;
+  display: block;
+  margin-bottom: 10px;
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+  }
+}
+.fixed-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
 }
 </style>

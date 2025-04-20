@@ -1,5 +1,5 @@
 <template>
-  <div class="ai-help-container">
+  <div class="ppt-page">
     <div class="return-btn" @click="handleReturn">
       <img src="@/assets/return.png" alt="返回" />
     </div>
@@ -93,4 +93,9 @@ const handleReturn = () => {
 </script>
 
 <style lang="less" scoped>
+.ppt-page {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: rgba(0, 53, 127, 0.9);
+}
 </style>

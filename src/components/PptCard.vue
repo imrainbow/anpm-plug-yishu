@@ -13,7 +13,7 @@
               box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
             "
           >
-            {{ item.title }}
+            <span>{{ item.title }}</span>
           </div>
         </div>
       </div>
@@ -40,5 +40,18 @@ const handleClick = (id) => {
 </script>
 
 
-<style>
+<style lang="less" scoped>
+.module-card {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 20px;
+  font-weight: bold;
+  &:hover {
+    cursor: pointer;
+    color: #61d3ff;
+  }
+}
 </style>
