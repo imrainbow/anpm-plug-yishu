@@ -7,15 +7,48 @@
     </div>
     <div class="file-upload-content">
       <!-- 文件列表 -->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%" :loading="loading">
         <el-table-column type="index" label="序号" />
-        <el-table-column prop="name" label="标题" />
-        <el-table-column prop="size" label="模块" />
-
-        <el-table-column prop="type" label="操作" />
+        <el-table-column prop="title" label="标题" />
+        <el-table-column prop="menu_id" label="模块">
+          <template #default="scope">
+            {{ formatModalName(scope.row.menu_id) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="file_name" label="文件名字" />
+        <el-table-column prop="created_at" label="上传时间">
+          <template #default="scope">
+            {{ formatTimestamp(scope.row.created_at) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="120">
+          <template #default="scope">
+            <el-button
+              type="danger"
+              :icon="Delete"
+              @click="handleDeleteClick(scope.row)"
+              circle
+            />
+          </template>
+        </el-table-column>
       </el-table>
       <!-- /文件列表 -->
       <!-- 分页 -->
+      <div class="pagination-container">
+        <el-pagination
+          v-model:current-page="page.page"
+          v-model:page-size="page.page_size"
+          :page-sizes="[10, 20, 50, 100, 200]"
+          :size="size"
+          :disabled="disabled"
+          :background="background"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+      <!-- /分页 -->
     </div>
     <!-- 上传文件弹框 -->
     <el-dialog v-model="dialogVisible" title="上传文件" width="50%">
@@ -64,17 +97,141 @@
 </template>
 
 <script setup>
-import { UploadFilled } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { UploadFilled, Edit, Delete } from '@element-plus/icons-vue'
+import { ref ,onMounted} from 'vue'
 import { getPptMenuList } from '@/api/ppt-menu'
-import { uploadFillFile } from '@/api/fill-upload'
-import { ElMessage } from 'element-plus'
+import { getPptMenuListNotTree } from '@/api/ppt-menu'
+import { uploadFillFile, getFillFileList, deleteFillFile, updateFillFile } from '@/api/fill-upload'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const dialogVisible = ref(false)
+const menuList = ref([])
 const form = ref({
   title: '',
   menu_id: '',
   file: ''
+})
+const tableData = ref([])
+const loading = ref(false)
+const page = ref({
+  page: 1,
+  page_size: 10
+})
+const total = ref(0)
+const size = ref('default')
+const background = ref(true)
+const disabled = ref(false)
+
+// 格式化时间戳为年月日
+const formatTimestamp = (timestamp) => {
+  if (!timestamp) return '—'
+  
+  // 如果是秒级时间戳，转换为毫秒级
+  const ms = String(timestamp).length === 10 ? timestamp * 1000 : timestamp
+  
+  const date = new Date(ms)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  
+  return `${year}-${month}-${day}`
+}
+const formatModalName = (menu_id) => {
+  const menuObj= menuList.value.find(item => item.id == menu_id)
+  if(menuObj){
+    if(menuObj.parent_id == 0){
+      return menuObj.name
+    }else{
+      const parentMenu = menuList.value.find(item => item.id == menuObj.parent_id)
+      if(parentMenu){
+        return `${parentMenu.name} / ${menuObj.name}`
+      }else{
+        return menuObj.name
+      }
+    }
+
+  }else return '--'
+    
+}
+
+//  删除文件处理函数
+const handleDeleteClick = (row) => {
+  ElMessageBox.confirm(
+    '确定要删除此文件吗？删除后不可恢复',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(async () => {
+      try {
+        // 调用删除API
+        const res = await deleteFillFile(row.id)
+        
+        if (res.success) {
+          ElMessage({
+            type: 'success',
+            message: '删除成功',
+          })
+          // 刷新文件列表
+          getFillFileListAsync()
+        } else {
+          ElMessage({
+            type: 'error',
+            message: res.message || '删除失败',
+          })
+        }
+      } catch (error) {
+        console.error('删除文件失败:', error)
+        ElMessage({
+          type: 'error',
+          message: '删除操作失败',
+        })
+      }
+    })
+    .catch(() => {
+      // 用户取消删除操作
+      ElMessage({
+        type: 'info',
+        message: '已取消删除',
+      })
+    })
+}
+// 获取文件列表
+const getFillFileListAsync = async() => {
+  loading.value = true
+  const res = await getFillFileList(page.value)
+  // console.log(res)
+  total.value = res.data.total
+  tableData.value = res.data.files || []
+  loading.value = false
+}
+// 页码改变时的处理函数
+const handleCurrentChange = (newPage) => {
+  page.value.page = newPage
+  getFillFileListAsync()
+}
+
+// 每页显示条数改变时的处理函数
+const handleSizeChange = (newSize) => {
+  page.value.page_size = newSize
+  // 更改每页条数后，页码重置为1
+  page.value.page = 1
+  getFillFileListAsync()
+}
+
+const getPptMenuListNotTreeAsync = async() => {
+  const res = await getPptMenuListNotTree()
+  menuList.value = res.data
+}
+onMounted(async() => {
+   await getPptMenuListNotTreeAsync()
+  
+  await getFillFileListAsync()
+ 
+  
 })
 // 表单校验规则
 const rules = {
