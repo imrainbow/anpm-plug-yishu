@@ -16,20 +16,49 @@
         "
       >
         <span>{{ node.label }}</span>
-        <el-button
-          v-if="data.parent_id == 0"
-          :icon="Plus"
-          circle
-          size="small"
-          @click.stop="handleAdd(data)"
-        />
-        <div v-else>
-          <el-button type="primary" link @click.stop="handleEdit(data)">
-            编辑
-          </el-button>
-          <el-button type="danger" link @click.stop="handleDelete(data)">
-            删除
-          </el-button>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="添加子节点"
+          placement="top-start"
+        >
+          <el-button
+            v-if="data.parent_id == 0"
+            :icon="Plus"
+            circle
+            size="small"
+            @click.stop="handleAdd(data)"
+          />
+        </el-tooltip>
+        <div v-if="data.parent_id != 0">
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="编辑"
+            placement="top-start"
+          >
+            <el-button
+              class="circle-primary"
+              :icon="Edit"
+              circle
+              @click.stop="handleEdit(data)"
+            >
+            </el-button>
+          </el-tooltip>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="删除"
+            placement="top-start"
+          >
+            <el-button
+              type="danger"
+              :icon="Delete"
+              circle
+              @click.stop="handleDelete(data)"
+            >
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
     </template>
@@ -61,7 +90,7 @@
 <script setup>
 import { getPptMenuList,addPptMenu,updatePptMenu,deletePptMenu } from '@/api/ppt-menu'
 import { onMounted, ref } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Edit, Delete } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
 // 获取PPT菜单列表

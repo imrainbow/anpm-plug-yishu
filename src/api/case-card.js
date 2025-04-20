@@ -36,3 +36,20 @@ export const deleteMoneyRecord = (id) => request.delete(`/api/money/${id}`)
 // 批量创建涉案款记录
 export const batchCreateMoneyRecord = (data) => request.post('/api/money/batch', data)
 
+
+// 获取涉案财物列表
+export const getPropertyList = (params) => request.get('/api/case-property', { params })
+
+// 创建涉案财物
+export const createProperty = (data) => request.post('/api/case-property', data)
+
+// 编辑涉案财物
+export const editProperty = (data) => request.put(`/api/case-property/${data.id}`, data)
+
+// 删除涉案财物
+export const deleteProperty = (id) => request.delete(`/api/case-property/${id}`)
+
+// 批量创建涉案财物
+export const batchCreateProperty = (data) => request.post('/api/case-property/batch', data)
+
+

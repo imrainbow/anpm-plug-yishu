@@ -10,7 +10,7 @@
     </div>
     <div v-if="secondMenu.length <= 1">
       <div class="ai-help-header">
-        <div class="header-left">特色品牌</div>
+        <div class="header-left">{{ menuTitle }}</div>
       </div>
       <div class="ppt-card-container">
         <PptCard v-if="filesList.length > 0" :files="filesList" />
@@ -28,7 +28,7 @@
           :name="item.id"
         >
           <PptCard v-if="filesList.length > 0" :files="filesList" />
-          <div class="no-data-container" v-else>
+          <div class="no-data-container" v-else style="margin-top: 200px">
             <NoData />
           </div>
         </el-tab-pane>
@@ -52,6 +52,7 @@ const NoData = defineAsyncComponent(() =>
 )
 const router = useRouter();
 const route = useRoute()
+const menuTitle = ref('')
 
 const queryData = ref({
   menu_id: 9,
@@ -79,6 +80,8 @@ const handleSecondMenu = () => {
     activeId.value = secondMenu.value[0].id;
     queryData.value.menu_id = activeId.value;
     console.log(secondMenu.value, 'secondMenu');
+  }else {
+    menuTitle.value = menuObj.name;
   }
 }
 const filesList = ref([]);
@@ -113,5 +116,8 @@ const handleReturn = () => {
   padding: 20px;
   min-height: 100vh;
   background-color: rgba(0, 53, 127, 0.9);
+}
+.ai-help-container {
+  height: unset !important;
 }
 </style>

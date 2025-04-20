@@ -86,7 +86,31 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="handleSubmit">上传</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmit"
+          :loading="submitLoading"
+        >
+          <template #loading>
+            <div class="custom-loading">
+              <svg class="circular" viewBox="-10, -10, 50, 50">
+                <path
+                  class="path"
+                  d="
+            M 30 15
+            L 28 17
+            M 25.61 25.61
+            A 15 15, 0, 0, 1, 15 30
+            A 15 15, 0, 1, 1, 27.99 7.5
+            L 15 15
+          "
+                  style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"
+                />
+              </svg>
+            </div>
+          </template>
+          上传</el-button
+        >
         <el-button class="btn-cancel" @click="dialogVisible = false"
           >取消</el-button
         >
@@ -113,6 +137,7 @@ const form = ref({
 })
 const tableData = ref([])
 const loading = ref(false)
+const submitLoading = ref(false)
 const page = ref({
   page: 1,
   page_size: 10
@@ -290,7 +315,7 @@ const handleFileChange = (file) => {
 // 提交表单
 const handleSubmit = async () => {
   if (!formRef.value) return
-  
+  submitLoading.value = true
   try {
     await handleUploadAsync()
    
@@ -298,6 +323,8 @@ const handleSubmit = async () => {
     
   } catch (error) {
     console.error('表单验证失败', error)
+  } finally {
+    submitLoading.value = false
   }
 }
 const handleUploadAsync = async() => {

@@ -70,7 +70,7 @@
           />
         </el-form-item>
         <el-form-item label="入库金额">
-          <el-input v-model="form.in_amount" />
+          <el-input v-model.number="form.in_amount" />
         </el-form-item>
         <el-form-item label="入库来源">
           <el-input v-model="form.in_source" />
@@ -85,7 +85,7 @@
           />
         </el-form-item>
         <el-form-item label="出库金额">
-          <el-input v-model="form.out_amount" />
+          <el-input v-model.number="form.out_amount" />
         </el-form-item>
         <el-form-item label="出库去向">
           <el-input v-model="form.out_to" />
