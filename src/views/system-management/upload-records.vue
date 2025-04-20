@@ -13,8 +13,20 @@
         <el-table-column prop="uploadTime" label="操作状态" />
       </el-table>
       <!-- /表格 -->
-      <!-- 分页 -->
-      <!-- /分页 -->
+      <div class="pagination-container">
+        <el-pagination
+          v-model:current-page="queryData.page"
+          v-model:page-size="queryData.pageSize"
+          :page-sizes="[10, 20, 50, 100, 200]"
+          :size="size"
+          :disabled="disabled"
+          :background="background"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +41,9 @@ const queryData = ref({
   page: 1,
   pageSize: 10,
 })
+const size = ref('default')
+const background = ref(true)
+const disabled = ref(false)
 
 const getTableData = async () => {
   const res = await getAllLogs(queryData.value)
