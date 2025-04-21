@@ -26,3 +26,20 @@ export function initMenu() {
 
     })
 }
+
+// 获取用户列表
+export function getUserList(data) {
+    return request({
+        url: '/api/users',
+        method: 'get',
+        params: data
+    })
+}
+// 修改密码
+export function editPassword(data) {
+    return request({
+        url: '/api/edit-password',
+        method: 'post',
+        data
+    })
+}

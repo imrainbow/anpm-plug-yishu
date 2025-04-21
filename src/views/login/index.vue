@@ -69,6 +69,7 @@ const rules = reactive({
 })
 // 登录方法
 const handleLogin = async () => {
+  sessionStorage.setItem('userInfo', loginForm.value.username)
   try {
     await loginFormRef.value.validate(async (valid) => {
       if (valid) {
