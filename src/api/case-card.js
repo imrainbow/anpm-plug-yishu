@@ -14,7 +14,7 @@ export const exportCases = (params) => request.get('/api/cases/export', { params
 export const createCase = (data) => request.post('/api/cases', data)
 
 // 编辑案卡
-export const editCase = (data) => request.put(`/api/cases/${data.ID}`, data)
+export const editCase = (data) => request.put(`/api/cases/${data.id}`, data)
 
 // 删除案卡
 export const deleteCase = (id) => request.delete(`/api/cases/${id}`)
@@ -53,3 +53,11 @@ export const deleteProperty = (id) => request.delete(`/api/case-property/${id}`)
 export const batchCreateProperty = (data) => request.post('/api/case-property/batch', data)
 
 
+// 获取案件类型统计
+export const getCaseTypeStatistic = () => request.get('/api/cases/stat/case-type')
+
+// 获取承办部门统计
+export const getDepartmentStatistic = () => request.get('/api/cases/stat/handling-dept')
+
+// 获取承办检察官统计
+export const getLawyerStatistic = () => request.get('/api/cases/stat/prosecutor')

@@ -48,7 +48,7 @@
                     <a
                       href="javascript:;"
                       class="module-card-link"
-                      @click="handleClick"
+                      @click="handleClick('/statistical-chart')"
                       >查看统计分析图</a
                     >
                   </div>

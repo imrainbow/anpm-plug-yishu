@@ -140,9 +140,10 @@ import { getCases,batchCreateCases,createCase,editCase,deleteCase } from '@/api/
 import { ElMessage,ElMessageBox } from 'element-plus';
 const router = useRouter();
 const dialogVisible = ref(false)
+
 // 定义初始表单数据
 const form = ref({
-  ID: null,
+  id: null,
   batch_no: '',
   department_no: '',
   case_name: '',
@@ -156,7 +157,7 @@ const form = ref({
 const loading = ref(false);
 const resetForm = () => {
   form.value = {
-    ID: null,
+    id: null,
   batch_no: '',
   department_no: '',
   case_name: '',
@@ -323,7 +324,7 @@ const handleDeleteClick = (row) => {
     cancelButtonText: '取消',
     type: 'warning',
   }).then(async () => {
-    const res = await deleteCase(row.ID);
+    const res = await deleteCase(row.id);
     if (res.success) {
       ElMessage.success('删除成功');
       getCasesList();
@@ -347,7 +348,9 @@ const handleCurrentChange = (pageNo) => {
   dialogVisible.value = true;
 }
 const handleEdit = async () => {
+  console.log(form.value, 'form.value');
   const res = await editCase(form.value);
+  
 
   if (res.success) {
     dialogVisible.value = false;
@@ -358,9 +361,9 @@ const handleEdit = async () => {
   }
 }
 const handleSave = async () => {
-  console.log(form.value.ID, 'form.value');
+  console.log(form.value.id, 'form.value');
 
-  if (form.value.ID) {
+  if (form.value.id) {
     await handleEdit();
   } else {
     await handleAdd();

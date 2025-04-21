@@ -167,6 +167,12 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/statistical-chart',
+    name: 'statistical-chart',
+    component: () => import('@/views/business-management/statistical-chart.vue'),
+
   }
 ]
 
