@@ -5,12 +5,26 @@
     <div class="card-body">
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="name" label="文件名" />
-        <el-table-column prop="size" label="所属模块" />
-        <el-table-column prop="uploadTime" label="操作时间" />
-        <el-table-column prop="uploadTime" label="操作类别" />
         <el-table-column prop="username" label="用户名" />
-        <el-table-column prop="uploadTime" label="操作状态" />
+
+        <el-table-column prop="updated_at" label="操作时间">
+          <template #default="scope">
+            {{
+              dayjs(scope.row.updated_at * 1000).format("YYYY-MM-DD HH:mm:ss")
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="operation_type" label="操作类别">
+          <template #default="scope">
+            {{ operationType[scope.row.operation_type] || "--" }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="detail" label="操作说明" />
+        <el-table-column prop="error" label="错误日志">
+          <template #default="scope">
+            {{ scope.row.error || "--" }}
+          </template>
+        </el-table-column>
       </el-table>
       <!-- /表格 -->
       <div class="pagination-container">
@@ -34,6 +48,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getAllLogs } from '@/api/system'
+import dayjs from 'dayjs'
 
 const tableData = ref([])
 const total = ref(0)
@@ -44,7 +59,29 @@ const queryData = ref({
 const size = ref('default')
 const background = ref(true)
 const disabled = ref(false)
-
+const operationType = ref({
+  "login": "登录",
+  "logout": "登出",
+  "upload": "上传",
+  "download": "下载",
+  "delete": "删除",
+  "modify": "修改",
+  "add": "新增",
+  "query": "查询",
+  "export": "导出",
+  "import": "导入",
+  "register": "注册",
+  "other": "其他",
+})
+const handleSizeChange = (size) => {
+  queryData.value.page = 1
+  queryData.value.pageSize = size
+  getTableData()
+}
+const handleCurrentChange = (page) => {
+  queryData.value.page = page
+  getTableData()
+}
 const getTableData = async () => {
   const res = await getAllLogs(queryData.value)
   if(res.success) {

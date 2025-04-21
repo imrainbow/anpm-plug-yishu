@@ -19,3 +19,10 @@ export function login(data) {
         data
     })
 }
+export function initMenu() {
+    return request({
+        url: '/api/init-menus',
+        method: 'post',
+
+    })
+}

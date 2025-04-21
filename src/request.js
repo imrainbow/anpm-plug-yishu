@@ -43,7 +43,7 @@ request.interceptors.response.use(
         }
     },
     (error) => {
-        debugger
+
         ElMessage.error(error.message || '请求失败')
         return {
             success: false,

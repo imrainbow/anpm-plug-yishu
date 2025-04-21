@@ -1,7 +1,18 @@
 <template>
   <div class="login-container">
+    <!-- 背景动效 -->
+    <div class="bg-container">
+      <div class="circle-container">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+      </div>
+      <div class="grid-container"></div>
+    </div>
+
     <!-- 登录面板 -->
     <div class="login-box">
+      <h2 class="login-title">欢迎登录</h2>
       <el-form :model="loginForm" :rules="rules" ref="loginFormRef">
         <el-form-item prop="username">
           <el-input
@@ -14,21 +25,21 @@
           <el-input
             v-model="loginForm.password"
             placeholder="请输入密码"
+            type="password"
             :prefix-icon="Lock"
           ></el-input>
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="login-button" @click="handleLogin"
-        >登录</el-button
-      >
+      <el-button type="primary" class="login-button" @click="handleLogin">
+        登录
+      </el-button>
     </div>
-    <!-- /登录面板 -->
+
     <!-- logo标题 -->
     <div class="logo-title">
       <img src="@/assets/images/logo.png" alt="logo" />
       <span>黟数检光数智管理平台</span>
     </div>
-    <!-- /logo标题 -->
   </div>
 </template>
 
@@ -51,6 +62,10 @@ const rules = reactive({
     { required: true, message: '请输入账号', trigger: 'blur' },
     { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
   ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+  ]
 })
 // 登录方法
 const handleLogin = async () => {
@@ -84,44 +99,183 @@ const handleLogin = async () => {
 <style lang="less" scoped>
 .login-container {
   height: 100vh;
+  width: 100vw;
+  position: relative;
+  background: linear-gradient(135deg, #1a2b3c 0%, #0d1b2a 100%);
+  overflow: hidden;
+
+  // 背景动效容器
+  .bg-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    // 圆形光环效果
+    .circle-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+
+      .circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid rgba(32, 128, 255, 0.2);
+
+        &::after {
+          content: "";
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          border-radius: 50%;
+          border: 2px solid transparent;
+          border-top-color: #2080ff;
+          animation: rotate 10s linear infinite;
+        }
+      }
+
+      .circle-1 {
+        width: 800px;
+        height: 800px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .circle-2 {
+        width: 600px;
+        height: 600px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        &::after {
+          animation-duration: 7s;
+        }
+      }
+
+      .circle-3 {
+        width: 400px;
+        height: 400px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        &::after {
+          animation-duration: 5s;
+        }
+      }
+    }
+
+    // 网格背景
+    .grid-container {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image: linear-gradient(
+          rgba(32, 128, 255, 0.1) 1px,
+          transparent 1px
+        ),
+        linear-gradient(90deg, rgba(32, 128, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      transform: perspective(500px) rotateX(45deg);
+      animation: grid-move 15s linear infinite;
+    }
+  }
+
+  // 登录框样式优化
   .login-box {
-    padding: 30px;
+    padding: 40px;
     width: 420px;
-    height: 350px;
-    background-color: #fff;
+    background: rgba(240, 238, 238, 0.1);
+    backdrop-filter: blur(10px);
     position: absolute;
     right: 10%;
     top: 50%;
     transform: translateY(-50%);
-    border-radius: 10px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  }
-  .login-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+
+    .login-title {
+      color: #fff;
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    :deep(.el-input) {
+      .el-input__wrapper {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: none;
+
+        input {
+          color: #fff;
+          &::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+          }
+        }
+      }
+    }
+
     .login-button {
       width: 100%;
       height: 52px;
       font-size: 22px;
+      background: linear-gradient(90deg, #2080ff, #80b3ff);
+      border: none;
+      margin-top: 20px;
+
+      &:hover {
+        background: linear-gradient(90deg, #1a6cd4, #6a9ee6);
+      }
     }
   }
+
+  // logo标题样式优化
   .logo-title {
     position: absolute;
     left: 40px;
     top: 40px;
     display: flex;
     align-items: center;
+    z-index: 2;
+
     img {
       width: 100px;
+      filter: drop-shadow(0 0 10px rgba(32, 128, 255, 0.5));
     }
+
     span {
       font-family: "AliHYAiHei";
       font-size: 30px;
-      color: rgb(43, 170, 213);
+      color: #fff;
       font-weight: 600;
+      text-shadow: 0 0 10px rgba(32, 128, 255, 0.5);
+      margin-left: 15px;
     }
+  }
+}
+
+// 动画关键帧
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes grid-move {
+  from {
+    transform: perspective(500px) rotateX(45deg) translateY(0);
+  }
+  to {
+    transform: perspective(500px) rotateX(45deg) translateY(20px);
   }
 }
 </style>
