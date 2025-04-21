@@ -50,7 +50,10 @@
           <img src="@/assets/images/case-management.png" alt="案件管理" />
           <span class="panel-itme-text">案件管理</span>
         </div>
-        <div class="panel-itme left-panel-item" @click="gotoPptDetail(8)">
+        <div
+          class="panel-itme left-panel-item"
+          @click="gotoPptDetail('数字模型')"
+        >
           <img src="@/assets/images/digital-model.png" alt="数字模型" />
           <span class="panel-itme-text">数字模型</span>
         </div>
@@ -76,7 +79,10 @@
           <img src="@/assets/images/check-cases.png" alt="检查办案" />
           <span class="panel-itme-text">检察办案</span>
         </div>
-        <div class="panel-itme middle-panel-item" @click="gotoPptDetail(9)">
+        <div
+          class="panel-itme middle-panel-item"
+          @click="gotoPptDetail('特色品牌')"
+        >
           <img src="@/assets/images/featured-brands.png" alt="特色品牌" />
           <span class="panel-itme-text">特色品牌</span>
         </div>
@@ -84,11 +90,17 @@
       <!-- /中间面板 -->
       <!-- 右侧面板 -->
       <div class="right-panel">
-        <div class="panel-itme right-panel-item" @click="gotoPptDetail(10)">
+        <div
+          class="panel-itme right-panel-item"
+          @click="gotoPptDetail('业务管理')"
+        >
           <img src="@/assets/images/business-management.png" alt="业务管理" />
           <span class="panel-itme-text">业务管理</span>
         </div>
-        <div class="panel-itme right-panel-item" @click="gotoPptDetail(11)">
+        <div
+          class="panel-itme right-panel-item"
+          @click="gotoPptDetail('质量管理')"
+        >
           <img src="@/assets/images/quality-assurance.png" alt="质量管理" />
           <span class="panel-itme-text">质量管理</span>
         </div>

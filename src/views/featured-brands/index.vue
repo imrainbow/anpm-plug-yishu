@@ -53,6 +53,10 @@ const NoData = defineAsyncComponent(() =>
 const router = useRouter();
 const route = useRoute()
 const menuTitle = ref('')
+onMounted(() => {
+  menuTitle.value = route.query.id
+
+})
 
 const queryData = ref({
   menu_id: 9,
@@ -63,9 +67,11 @@ const pptMenuList = ref([]);
 const getPptMenuListAsync = async () => {
   const res = await getPptMenuList();
   pptMenuList.value = res.data;
+ queryData.value.menu_id = pptMenuList.value.find(item => item.name == menuTitle.value).id;
   handleSecondMenu();
 }
 const activeId = ref(9);
+
 // 处理是不是有二级菜单
 const secondMenu = ref([]);
 const handleSecondMenu = () => {
