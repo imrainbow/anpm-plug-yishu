@@ -307,7 +307,7 @@ const handleFileChange = (file) => {
   fileList.value = [file]
 
   // 如果标题为空，则使用文件名作为标题
-  if (form.value.title === '') {
+  if (form.value.title == '') {
     // 获取文件名（不包含扩展名）
     const fileName = file.name.replace(/\.[^/.]+$/, '')
     form.value.title = fileName
@@ -355,6 +355,7 @@ const handleUploadAsync = async() => {
       ElMessage.success('上传成功')
       dialogVisible.value = false
       handleClose()  // 重置表单
+      getFillFileListAsync()
     } else {
       ElMessage.error(res.message || '上传失败')
     }
@@ -369,7 +370,7 @@ const handleClose = () => {
   fileList.value = []
   form.value = {
     title: '',
-    module: '',
+    menu_id: '',
     description: '',
     file: ''
   }
