@@ -48,7 +48,12 @@
       </el-table>
     </div>
     <!-- 新增弹框 -->
-    <el-dialog v-model="dialogVisible" title="注册用户" destroy-on-close>
+    <el-dialog
+      v-model="dialogVisible"
+      title="注册用户"
+      @closed="restForm"
+      destroy-on-close
+    >
       <el-form
         ref="addUserFormRef"
         :model="addUserForm"
@@ -56,7 +61,7 @@
         label-width="90px"
       >
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="addUserForm.username" disabled />
+          <el-input v-model="addUserForm.username" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="addUserForm.password" />
@@ -73,7 +78,12 @@
       </template>
     </el-dialog>
     <!-- 修改密码弹框 -->
-    <el-dialog v-model="dialogVisibleEdit" :title="密码修改" destroy-on-close>
+    <el-dialog
+      v-model="dialogVisibleEdit"
+      @closed="restFormEdit"
+      title="密码修改"
+      destroy-on-close
+    >
       <el-form
         ref="editUserFormRef"
         :model="editUserForm"
@@ -81,12 +91,12 @@
         label-width="90px"
       >
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="editUserForm.username" />
+          <el-input v-model="editUserForm.username" disabled />
         </el-form-item>
-        <el-form-item label="旧密码" prop="oldPassword">
+        <el-form-item label="旧密码" prop="old_password">
           <el-input v-model="editUserForm.old_password" />
         </el-form-item>
-        <el-form-item label="新密码" prop="newPassword">
+        <el-form-item label="新密码" prop="new_password">
           <el-input v-model="editUserForm.new_password" />
         </el-form-item>
       </el-form>
@@ -119,6 +129,7 @@ const editUserForm = ref({
   old_password: '',
   new_password: '',
 })
+const editUserFormRef = ref(null)
 // 校验就密码不能和旧密码一致
 const validateEditPass = (rule, value, callback) => {
   if (value === editUserForm.value.old_password) {
@@ -138,7 +149,8 @@ const editRitRules = reactive({
     { validator: validateEditPass, trigger: 'blur' }
   ]
 })
-const title = ref('注册用户')
+const dialogVisibleEdit = ref(false)
+
 
 const queryData = ref({
   page: 1,
@@ -157,27 +169,15 @@ const getTableData = async () => {
  
 }
 const handleEditClick = (row) => {
+  console.log(row)
   console.log(row.username,userName)
   if (row.username !== userName) {
     return
   }
-  dialogVisible.value = true
-  addUserForm.value = row
-  title.value = '编辑用户'
-  rules.value = {
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
-  ],
-  password: [
-   
-    { min: 6, message: '密码长度不能小于6位', trigger: 'blur' }
-  ],
-  confirmPassword: [
-   
-    { validator: validatePass, trigger: 'blur' }
-  ]
-}
+  dialogVisibleEdit.value = true
+  editUserForm.value = row
+
+  
 }
 onMounted(() => {
   getTableData()
@@ -224,6 +224,9 @@ const handleAddOk = async () => {
         if (res.success) {
       ElMessage.success('注册用户成功')
       dialogVisible.value = false
+      getTableData()
+    
+      
       } else {
         // ElMessage.error(res.message)
       }
@@ -248,6 +251,22 @@ const handleEditOk = async () => {
       }
     }
   })
+}
+const restForm = () => {
+  addUserForm.value = {
+    username: '',
+    password: '',
+    confirmPassword: ''
+  }
+}
+const restFormEdit = () => {
+
+  editUserForm.value = {
+    username: '',
+    old_password: '',
+    new_password: ''
+  }
+  editUserFormRef.value.resetFields()
 }
 </script>
 
