@@ -51,7 +51,12 @@
       <!-- /分页 -->
     </div>
     <!-- 上传文件弹框 -->
-    <el-dialog v-model="dialogVisible" title="上传文件" width="50%">
+    <el-dialog
+      v-model="dialogVisible"
+      title="上传文件"
+      width="50%"
+      @closed="handleClose"
+    >
       <el-form :model="form" :rules="rules" ref="formRef" label-width="90px">
         <el-form-item label="标题" placeholder="请输入标题" prop="title">
           <el-input v-model="form.title" />
@@ -91,25 +96,7 @@
           @click="handleSubmit"
           :loading="submitLoading"
         >
-          <template #loading>
-            <div class="custom-loading">
-              <svg class="circular" viewBox="-10, -10, 50, 50">
-                <path
-                  class="path"
-                  d="
-            M 30 15
-            L 28 17
-            M 25.61 25.61
-            A 15 15, 0, 0, 1, 15 30
-            A 15 15, 0, 1, 1, 27.99 7.5
-            L 15 15
-          "
-                  style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"
-                />
-              </svg>
-            </div>
-          </template>
-          上传</el-button
+          {{ submitLoading ? "上传中" : "上传" }}</el-button
         >
         <el-button class="btn-cancel" @click="dialogVisible = false"
           >取消</el-button
@@ -121,7 +108,7 @@
 </template>
 
 <script setup>
-import { UploadFilled, Edit, Delete } from '@element-plus/icons-vue'
+import { UploadFilled, Delete } from '@element-plus/icons-vue'
 import { ref ,onMounted} from 'vue'
 import { getPptMenuList } from '@/api/ppt-menu'
 import { getPptMenuListNotTree } from '@/api/ppt-menu'
@@ -263,15 +250,26 @@ onMounted(async() => {
 // 表单校验规则
 const rules = {
   title: [
-    { required: true, message: '请输入标题', trigger: 'blur' },
+    { required: true, message: '请输入标题', trigger: 'change' },
     
   ],
-  module: [
+  menu_id: [
     { required: true, message: '请选择模块', trigger: 'change' }
   ],
  
   file: [
-    { required: true, message: '请选择文件', trigger: 'change' }
+  { 
+      required: true, 
+      message: '请选择文件', 
+      trigger: 'change',
+      validator: (rule, value, callback) => {
+        if (fileList.value.length === 0) {
+          callback(new Error('请选择文件'))
+        } else {
+          callback()
+        }
+      }
+    }
   ]
 }
 const fileList = ref([])
@@ -305,6 +303,7 @@ const beforeUpload = (file) => {
 // 文件选择变化时的处理
 const handleFileChange = (file) => {
   fileList.value = [file]
+  form.value.file = file.raw
 
   // 如果标题为空，则使用文件名作为标题
   if (form.value.title == '') {
@@ -313,13 +312,20 @@ const handleFileChange = (file) => {
     form.value.title = fileName
   }
 }
+
 // 上传按钮点击事件
 // 提交表单
 const handleSubmit = async () => {
-  if (!formRef.value) return
+  // 验证表单
+
   submitLoading.value = true
   try {
-    await handleUploadAsync()
+    const valid = await formRef.value.validate()
+    if(valid) {
+      await handleUploadAsync()
+
+    }
+   
    
     
     
@@ -354,7 +360,7 @@ const handleUploadAsync = async() => {
     if (res.success) {
       ElMessage.success('上传成功')
       dialogVisible.value = false
-      handleClose()  // 重置表单
+    
       getFillFileListAsync()
     } else {
       ElMessage.error(res.message || '上传失败')
@@ -364,14 +370,16 @@ const handleUploadAsync = async() => {
     ElMessage.error('上传失败')
   }
 }
+const uploadRef = ref(null)
 // 关闭对话框时重置表单
 const handleClose = () => {
   formRef.value?.resetFields()
   fileList.value = []
+  uploadRef.value?.clearFiles()
   form.value = {
     title: '',
     menu_id: '',
-    description: '',
+   
     file: ''
   }
   dialogVisible.value = false
@@ -394,5 +402,40 @@ const uploadClick = async() => {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+/* 添加以下 loading 相关样式 */
+.custom-loading {
+  .circular {
+    width: 18px;
+    height: 18px;
+    animation: loading-rotate 2s linear infinite;
+  }
+
+  .path {
+    stroke: #fff;
+    stroke-linecap: round;
+    animation: loading-dash 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes loading-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loading-dash {
+  0% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -40px;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -120px;
+  }
 }
 </style>
