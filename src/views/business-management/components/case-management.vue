@@ -47,7 +47,13 @@
         </el-table-column>
         <el-table-column prop="exit_time" label="物品去向">
           <template #default="scope">
-            {{ formatTimestamp(scope.row.exit_time) }}
+            {{
+              scope.row.exit_time
+                ? scope.row.exit_time === ""
+                  ? "--"
+                  : scope.row.exit_time
+                : "--"
+            }}
           </template>
         </el-table-column>
         <el-table-column prop="receive_amount" label="涉案款收入金额">
@@ -104,8 +110,13 @@
     </div>
 
     <!-- 新增弹窗 -->
-    <el-dialog v-model="dialogVisible" title="新增" width="50%">
-      <el-form :model="form" ref="formRef" :rules="rules">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="form.id ? '编辑' : '新增'"
+      width="50%"
+      @closed="handleResetForm"
+    >
+      <el-form :model="form" ref="formRef" :rules="rules" label-width="120px">
         <el-form-item label="案件名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入案件名称" />
         </el-form-item>
@@ -120,7 +131,6 @@
         <el-form-item label="入库时间" prop="entry_time">
           <el-date-picker
             v-model="form.entry_time"
-            s
             placeholder="请选择入库时间"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
@@ -129,8 +139,11 @@
           />
         </el-form-item>
 
-        <el-form-item label="物品名称" prop="property_name">
-          <el-input v-model="form.property_name" placeholder="请输入物品名称" />
+        <el-form-item label="涉案物品出库" prop="property_name">
+          <el-input
+            v-model="form.property_name"
+            placeholder="请输入涉案物品出库"
+          />
         </el-form-item>
 
         <el-form-item label="出库时间" prop="storage_time">
@@ -143,21 +156,22 @@
             :style="{ width: '100%' }"
           />
         </el-form-item>
+        <el-form-item label="物品去向" prop="exit_time">
+          <el-input v-model="form.exit_time" placeholder="请输入物品去向" />
+        </el-form-item>
 
-        <el-form-item label="收入金额" prop="receive_amount">
-          <el-input-number
-            v-model="form.receive_amount"
-            :precision="2"
-            :step="0.01"
-            :min="0"
+        <el-form-item label="涉案款收入金额" prop="receive_amount">
+          <el-input
+            placeholder="请输入涉案款收入金额"
+            v-model.number="form.receive_amount"
             :style="{ width: '100%' }"
           />
         </el-form-item>
 
-        <el-form-item label="收入时间" prop="receive_time">
+        <el-form-item label="收入日期" prop="receive_time">
           <el-date-picker
             v-model="form.receive_time"
-            placeholder="请选择收入时间"
+            placeholder="请选择收入日期"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             :clearable="true"
@@ -169,20 +183,18 @@
           <el-input v-model="form.receiver" placeholder="请输入交款人" />
         </el-form-item>
 
-        <el-form-item label="支出金额" prop="pay_amount">
-          <el-input-number
-            v-model="form.pay_amount"
-            :precision="2"
-            :step="0.01"
-            :min="0"
+        <el-form-item label="涉案款支出金额" prop="pay_amount">
+          <el-input
+            placeholder="请输入涉案款支出金额"
+            v-model.number="form.pay_amount"
             :style="{ width: '100%' }"
           />
         </el-form-item>
 
-        <el-form-item label="支出时间" prop="pay_time">
+        <el-form-item label="支出日期" prop="pay_time">
           <el-date-picker
             v-model="form.pay_time"
-            placeholder="请选择支出时间"
+            placeholder="请选择支出日期"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             :clearable="true"
@@ -190,8 +202,8 @@
           />
         </el-form-item>
 
-        <el-form-item label="支出原因" prop="pay_reason">
-          <el-input v-model="form.pay_reason" placeholder="请输入支出原因" />
+        <el-form-item label="资金去向" prop="pay_reason">
+          <el-input v-model="form.pay_reason" placeholder="请输入资金去向" />
         </el-form-item>
 
         <el-form-item label="备注" prop="remark">
@@ -247,6 +259,16 @@ const total = ref(0)
 const tableData = ref([])
 const loading = ref(false)
 const dialogVisible = ref(false)
+const formRef = ref(null)
+const rules = {
+  receive_amount: [
+    { type: 'number', message: '请输入数字', trigger: 'blur' }
+  ],
+  pay_amount: [
+    { type: 'number', message: '请输入数字', trigger: 'blur' }
+  ]
+
+}
 // 格式化时间戳
 const formatTimestamp = (timestamp) => {
   if (!timestamp) return '--'
@@ -287,13 +309,22 @@ const deletePropertyAsync = async (id) => {
     console.error('删除涉案财物失败', error)  
   }
 }
-const handleSave = () => {
-  if(!form.value.id){
-    // 新增
-    createPropertyAsync()
-  }else {
-    // 编辑
-    editPropertyAsync()
+const handleSave = async() => {
+  try {
+    // 先进行表单验证
+    await formRef.value.validate()
+    
+    if(!form.value.id){
+      // 新增
+      await createPropertyAsync()
+    }else {
+      // 编辑
+      await editPropertyAsync()
+    }
+  } catch (error) {
+    // 如果是验证错误，不需要额外处理，element-plus 会自动显示错误信息
+    console.error('表单提交失败:', error)
+    return
   }
 }
 const createPropertyAsync = async () => {
@@ -431,6 +462,25 @@ const handleDeleteClick = (row) => {
   }).then(() => {
     deletePropertyAsync(row.id)
   })
+}
+const handleResetForm = () => {
+
+  formRef.value.resetFields()
+  form.value = {
+    name: '', // 案件名称
+    property_type: '', // 涉案物品入库
+    entry_time: '', // 入库时间
+    exit_time: '', // 出库时间
+    storage_time: '', // 存储时间
+    property_name: '', // 物品名称
+    receive_amount: '', // 收入金额
+    receive_time: '', // 收入时间 
+    receiver: '', // 交款人
+    pay_amount: '', // 支出金额
+    pay_time: '', // 支出时间
+    pay_reason: '', // 支出原因
+    remark: '' // 备注
+  }
 }
 
 </script>
