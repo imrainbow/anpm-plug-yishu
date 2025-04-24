@@ -28,13 +28,16 @@ export const getCasesList = (params) => request.get('/api/money', { params })
 export const createMoneyRecord = (data) => request.post('/api/money', data)
 
 // 编辑涉案款记录
-export const editMoneyRecord = (data) => request.put(`/api/money/${data.ID}`, data)
+export const editMoneyRecord = (data) => request.put(`/api/money/${data.id}`, data)
 
 // 删除涉案款记录
 export const deleteMoneyRecord = (id) => request.delete(`/api/money/${id}`)
 
 // 批量创建涉案款记录
 export const batchCreateMoneyRecord = (data) => request.post('/api/money/batch', data)
+
+// 获取涉案款列表
+export const getMoneyList = (params) => request.get('/api/money', { params })
 
 
 // 获取涉案财物列表
