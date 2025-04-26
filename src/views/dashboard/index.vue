@@ -47,14 +47,22 @@
           class="panel-itme left-panel-item"
           @click="gotoDetail('/business-management')"
         >
-          <img src="@/assets/images/case-management.png" alt="案件管理" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/case-management.png"
+            alt="案件管理"
+          />
           <span class="panel-itme-text">案件管理</span>
         </div>
         <div
           class="panel-itme left-panel-item"
           @click="gotoPptDetail('数字模型')"
         >
-          <img src="@/assets/images/digital-model.png" alt="数字模型" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/digital-model.png"
+            alt="数字模型"
+          />
           <span class="panel-itme-text">数字模型</span>
         </div>
       </div>
@@ -65,25 +73,41 @@
           class="panel-itme middle-panel-item"
           @click="gotoDetail('/legal-search')"
         >
-          <img src="@/assets/images/legal-search.png" alt="法律检索" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/legal-search.png"
+            alt="法律检索"
+          />
           <span class="panel-itme-text">法律检索</span>
         </div>
         <div class="panel-itme middle-panel-item" @click="handleAIHelp">
-          <img src="@/assets/images/AI-help.png" alt="AI辅助" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/AI-help.png"
+            alt="AI辅助"
+          />
           <span class="panel-itme-text">AI辅助</span>
         </div>
         <div
           class="panel-itme middle-panel-item"
           @click="gotoDetail('/check-cases')"
         >
-          <img src="@/assets/images/check-cases.png" alt="检查办案" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/check-cases.png"
+            alt="检查办案"
+          />
           <span class="panel-itme-text">检察办案</span>
         </div>
         <div
           class="panel-itme middle-panel-item"
           @click="gotoPptDetail('特色品牌')"
         >
-          <img src="@/assets/images/featured-brands.png" alt="特色品牌" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/featured-brands.png"
+            alt="特色品牌"
+          />
           <span class="panel-itme-text">特色品牌</span>
         </div>
       </div>
@@ -94,14 +118,22 @@
           class="panel-itme right-panel-item"
           @click="gotoPptDetail('业务管理')"
         >
-          <img src="@/assets/images/business-management.png" alt="业务管理" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/business-management.png"
+            alt="业务管理"
+          />
           <span class="panel-itme-text">业务管理</span>
         </div>
         <div
           class="panel-itme right-panel-item"
           @click="gotoPptDetail('质量管理')"
         >
-          <img src="@/assets/images/quality-assurance.png" alt="质量管理" />
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/quality-assurance.png"
+            alt="质量管理"
+          />
           <span class="panel-itme-text">质量管理</span>
         </div>
       </div>
@@ -306,6 +338,38 @@ const gotoDetail = (path) => {
   font-size: 26px;
   .panel-itme-text {
     margin-top: 30px;
+  }
+}
+.panel-itme-img {
+  width: 50%;
+}
+@media screen and (min-width: 1440px) and (max-width: 1919px) {
+  .panel-itme-text {
+    font-size: 24px;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1439px) {
+  .panel-itme-text {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .panel-itme-text {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .panel-itme-text {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .panel-itme-text {
+    font-size: 16px;
   }
 }
 </style>

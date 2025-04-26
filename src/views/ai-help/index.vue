@@ -1,170 +1,13 @@
 <template>
-  <div class="ai-help-container">
-    <div class="ai-help-header">
-      <div class="header-left">AI辅助</div>
-      <div class="header-right" @click="handleReturn">
-        <img src="@/assets/return.png" alt="返回" />
-      </div>
-    </div>
-    <div class="ai-help-content">
-      <div id="ai-assist" class="content-section">
-        <div class="card">
-          <div class="card-body">
-            <div class="module-grid">
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>Deepseek</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    Deepseek AI提供智能文本生成和分析能力，辅助办案文书撰写。
-                  </p>
-                  <a
-                    href="https://chat.deepseek.com/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问Deepseek</a
-                  >
-                </div>
-              </div>
-
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>Kimi</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    Kimi AI平台提供智能对话和文本生成功能，辅助法律分析和研究。
-                  </p>
-                  <a
-                    href="https://kimi.moonshot.cn/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问Kimi</a
-                  >
-                </div>
-              </div>
-
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>豆包</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    字节跳动旗下豆包AI助手，提供丰富的交互式AI体验。
-                  </p>
-                  <a
-                    href="https://www.doubao.com/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问豆包</a
-                  >
-                </div>
-              </div>
-              <!-- 开始 -->
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>即梦</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">图片生成最强</p>
-                  <a
-                    href="https://jimeng.jianying.com/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问即梦</a
-                  >
-                </div>
-              </div>
-              <!-- /结束 -->
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>通义千问</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    阿里巴巴开发的大型语言模型，提供精准的智能对话和文本生成能力。
-                  </p>
-                  <a
-                    href="https://qianwen.aliyun.com/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问通义千问</a
-                  >
-                </div>
-              </div>
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>天工</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">AI音乐最强</p>
-                  <a
-                    href="https://tiangong.aliyun.com/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问天工</a
-                  >
-                </div>
-              </div>
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>AIPPT</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">AI PPT最强</p>
-                  <a
-                    href="https://www.aippt.cn/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问AIPPT</a
-                  >
-                </div>
-              </div>
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>ProcessOn</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    ProcessOn是一款在线协作工具，提供流程图、思维导图、组织结构图等多种图表工具(流程图最强)。
-                  </p>
-                  <a
-                    href="https://www.processon.com/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问ProcessOn</a
-                  >
-                </div>
-              </div>
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>纳米AI搜索</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    纳米AI搜索是一款AI搜索工具，提供精准的智能对话和文本生成能力（AI搜索最强）。
-                  </p>
-                  <a
-                    href="https://www.nanmi.ai/"
-                    target="_blank"
-                    class="module-card-link"
-                    >访问纳米AI搜索</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <div class="ai-container">
+    <div class="flex-container">
+      <div
+        class="card"
+        v-for="item in aiTools"
+        :key="item.name"
+        @click="handleCardClick(item)"
+      >
+        {{ item.name }}
       </div>
     </div>
   </div>
@@ -175,39 +18,91 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+const aiTools = [
+  { name: 'Deepseek', path: '/deepseek' },
+  { name: '豆包', path: '/doubao' },
+  { name: 'Kimi', path: '/kimi' },
+  { name: '即时', path: '/instant' },
+  { name: '可灵', path: '/keling' },
+  { name: '天工', path: '/tiangong' },
+  { name: 'Aippt', path: '/aippt' },
+  { name: 'Processon', path: '/processon' },
+  { name: '讯飞 ai', path: '/xunfei' },
+];
+
+const handleCardClick = (item) => {
+  router.push(item.path);
+};
+
 const handleReturn = () => {
   router.back();
 };
 </script>
 
 <style lang="less" scoped>
-.ai-help-container {
-  background-color: #f5f8fc;
-  padding: 20px;
+.ai-container {
   height: 100vh;
+  background-color: rgba(0, 53, 127, 0.9);
+  padding: 40px 80px; // 增加左右内边距
   box-sizing: border-box;
-  .ai-help-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    height: 80px;
-    background-color: #fff;
-    height: 80px;
-    border-radius: 6px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); // 添加柔和的阴影效果
-    .header-right {
-      img {
-        height: 40px;
-      }
-    }
-    .header-left {
-      font-size: 24px;
-      font-weight: bold;
-    }
+  display: flex;
+  align-items: center;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px; // 增加卡片之间的间距
+  margin: 0 auto;
+}
+
+.card {
+  flex: 0 0 calc(33.333% - 27px); // 调整宽度计算以适应新的间距
+  background-color: #1890ff;
+  color: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #40a9ff;
+  }
+
+  &:active {
+    transform: translateY(0);
+    background-color: #096dd9;
   }
 }
-.ai-help-content {
-  margin-top: 20px;
+
+// 响应式设计
+@media screen and (max-width: 1200px) {
+  .ai-container {
+    padding: 40px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .card {
+    flex: 0 0 calc(50% - 20px); // 在较小屏幕上每行显示2个
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .card {
+    flex: 0 0 100%; // 在最小屏幕上每行显示1个
+  }
+  .ai-container {
+    padding: 20px;
+  }
 }
 </style>
