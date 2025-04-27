@@ -1,17 +1,14 @@
 <template>
   <div class="ai-help-container help-container ppt-page">
-    <div
-      :class="
-        secondMenu.length <= 1 ? 'return-btn one-tab-return' : 'return-btn'
-      "
-      @click="handleReturn"
-    >
-      <img src="@/assets/return.png" alt="返回" />
-    </div>
-    <div v-if="secondMenu.length <= 1">
-      <div class="ai-help-header">
-        <div class="header-left">{{ menuTitle }}</div>
-      </div>
+    <el-tooltip class="box-item" content="返回" placement="left">
+      <img
+        class="return-img"
+        src="@/assets/return-circle.png"
+        alt=""
+        @click="handleReturn"
+      />
+    </el-tooltip>
+    <div class="box-container" v-if="secondMenu.length <= 1">
       <div class="ppt-card-container">
         <PptCard v-if="filesList.length > 0" :files="filesList" />
         <div class="no-data-container" v-else>
@@ -19,20 +16,34 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <el-tabs v-model="activeId" class="demo-tabs" @tab-click="handleTabClick">
-        <el-tab-pane
-          v-for="item in secondMenu"
-          :key="item.id"
-          :label="item.name"
-          :name="item.id"
-        >
+    <!-- 有2个以上二级标题 -->
+    <div class="box-container" v-else>
+      <div class="ai-help-content">
+        <div id="ai-assist" class="content-section" v-if="secondType == 1">
+          <div class="card-body" style="background: #00357f; margin: unset">
+            <div class="module-grid">
+              <div
+                @click="handleClick(item.id)"
+                class="module-card"
+                v-for="item in secondMenu"
+                :key="item.id"
+                style="
+                  background: rgba(73, 147, 251, 0.1);
+                  box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
+                "
+              >
+                {{ item.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ppt-card-container" v-else>
           <PptCard v-if="filesList.length > 0" :files="filesList" />
-          <div class="no-data-container" v-else style="margin-top: 200px">
+          <div class="no-data-container" v-else>
             <NoData />
           </div>
-        </el-tab-pane>
-      </el-tabs>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -43,6 +54,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 import { getFilesByMenuID } from '@/api/ppt-page';
 import { getPptMenuList } from '@/api/ppt-menu';
+
 // 使用异步组件
 const PptCard = defineAsyncComponent(() => 
   import('@/components/PptCard.vue')
@@ -50,6 +62,7 @@ const PptCard = defineAsyncComponent(() =>
 const NoData = defineAsyncComponent(() => 
   import('@/components/NoData.vue')
 )
+const secondType = ref(1)
 const router = useRouter();
 const route = useRoute()
 const menuTitle = ref('')
@@ -115,6 +128,11 @@ onMounted(async () => {
 const handleReturn = () => {
   router.back();
 };
+const handleClick = (id) => {
+  secondType.value = 2;
+  queryData.value.menu_id = id;
+  getFilesByMenuIDAsync();
+}
 </script>
 
 <style lang="less" scoped>
@@ -125,5 +143,21 @@ const handleReturn = () => {
 }
 .ai-help-container {
   height: unset !important;
+}
+.module-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #61d3ff;
+  font-size: 20px;
+  font-weight: bold;
+  &:hover {
+    cursor: pointer;
+
+    color: #fff;
+  }
+}
+.box-container {
+  margin-top: 60px;
 }
 </style>

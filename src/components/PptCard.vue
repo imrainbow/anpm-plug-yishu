@@ -42,6 +42,9 @@ const handleClick = (id) => {
 
 
 <style lang="less" scoped>
+.ai-help-content {
+  width: 100%;
+}
 .module-card {
   color: #fff;
   display: flex;

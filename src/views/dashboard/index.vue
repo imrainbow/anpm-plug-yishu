@@ -147,6 +147,8 @@
 import { SwitchButton } from '@element-plus/icons-vue' 
 import { useRouter } from "vue-router";
 import { useStore } from 'vuex'
+import { initMenu } from '@/api/user'
+import {onMounted} from 'vue'
 const router = useRouter();
 const store = useStore()
 const handleSystemManagement = () => {
@@ -169,6 +171,9 @@ const gotoPptDetail = (id) => {
 const gotoDetail = (path) => {
   router.push(path);
 };
+onMounted(async()  => {
+  const res = await initMenu()
+}   )
 </script>
 
 <style lang="less" scoped>

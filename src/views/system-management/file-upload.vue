@@ -114,7 +114,7 @@ import { getPptMenuList } from '@/api/ppt-menu'
 import { getPptMenuListNotTree } from '@/api/ppt-menu'
 import { uploadFillFile, getFillFileList, deleteFillFile, updateFillFile } from '@/api/fill-upload'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { initMenu } from '@/api/user'
+
 
 const dialogVisible = ref(false)
 const menuList = ref([])
@@ -240,7 +240,7 @@ const getPptMenuListNotTreeAsync = async() => {
   menuList.value = res.data
 }
 onMounted(async() => {
-  const res = await initMenu()
+  
    await getPptMenuListNotTreeAsync()
   
   await getFillFileListAsync()

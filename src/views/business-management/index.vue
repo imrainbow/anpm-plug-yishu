@@ -39,9 +39,9 @@ const handleClick = (type) => {
 </script>
 
 <style lang="less" scoped>
-.card-page {
-  background-color: #fff;
-}
+// .card-page {
+//   background-color: #fff;
+// }
 .business-management-content {
   margin-top: 20px;
   //   background-color: #f5f5f5;
