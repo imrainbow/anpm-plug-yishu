@@ -28,4 +28,7 @@ const handleReturn = () => {
 </script>
 
 <style lang="less" scoped>
+.card-page {
+  background-color: #fff;
+}
 </style>
