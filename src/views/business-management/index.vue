@@ -1,26 +1,19 @@
 <template>
-  <div class="ai-help-container">
-    <div class="ai-help-header">
-      <div class="header-left">案件管理</div>
-      <div class="header-right" @click="handleReturn">
-        <img src="@/assets/return.png" alt="返回" />
-      </div>
-    </div>
-    <div class="business-management-content">
-      <div id="ai-assist" class="content-section">
-        <div class="card">
-          <div class="card-body">
-            <div class="card-body-content">
-              <div class="module-card" @click="handleClick(1)">
-                涉案财物管理
-              </div>
+  <div class="ai-help-container card-page">
+    <!-- 返回按钮 -->
+    <el-tooltip class="box-item" content="返回" placement="left">
+      <img
+        class="return-img"
+        src="@/assets/return-circle.png"
+        alt=""
+        @click="handleReturn"
+      />
+    </el-tooltip>
+    <div class="card-body">
+      <div class="card-body-content">
+        <div class="module-card" @click="handleClick(1)">涉案财物管理</div>
 
-              <div class="module-card" @click="handleClick(2)">
-                <div class="module-card-body">案卡填录</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="module-card" @click="handleClick(2)">案卡填录</div>
       </div>
     </div>
   </div>
