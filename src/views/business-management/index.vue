@@ -11,48 +11,12 @@
         <div class="card">
           <div class="card-body">
             <div class="card-body-content">
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>涉案财物管理</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    提供涉案财物的登记、保管、处置等全流程管理。
-                  </p>
-                  <a
-                    href="javascript:;"
-                    class="module-card-link"
-                    @click="handleClick('/property-management')"
-                    >查看表格</a
-                  >
-                </div>
+              <div class="module-card" @click="handleClick(1)">
+                涉案财物管理
               </div>
 
-              <div class="module-card">
-                <div class="module-card-header">
-                  <i class="fas fa-robot"></i>
-                  <h3>案卡填录</h3>
-                </div>
-                <div class="module-card-body">
-                  <p class="module-card-description">
-                    提供案件基本信息的录入和管理功能。
-                  </p>
-                  <div class="card-footer">
-                    <a
-                      href="javascript:;"
-                      class="module-card-link"
-                      @click="handleClick('/case-card')"
-                      >查看表格</a
-                    >
-                    <a
-                      href="javascript:;"
-                      class="module-card-link"
-                      @click="handleClick('/statistical-chart')"
-                      >查看统计分析图</a
-                    >
-                  </div>
-                </div>
+              <div class="module-card" @click="handleClick(2)">
+                <div class="module-card-body">案卡填录</div>
               </div>
             </div>
           </div>
@@ -70,9 +34,14 @@ const router = useRouter();
 const handleReturn = () => {
   router.back();
 };
-const handleClick = (path) => {
+const handleClick = (type) => {
     // debugger
-  router.push(path);
+  router.push({
+    path:'/property-management',
+    query: {
+      type
+    }
+  });
 };
 </script>
 

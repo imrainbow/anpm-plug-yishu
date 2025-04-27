@@ -172,8 +172,21 @@ const routes = [
     path: '/statistical-chart',
     name: 'statistical-chart',
     component: () => import('@/views/business-management/statistical-chart.vue'),
+    meta: {
+      requiresAuth: true
+    }
 
-  }
+  },
+  {
+    path: '/table-management',
+    name: 'table-management',
+    component: () => import('@/views/business-management/table-management.vue'),
+    meta: {
+      requiresAuth: true
+    }
+
+  },
+
 ]
 
 const router = createRouter({
