@@ -43,34 +43,17 @@
       <!-- /右箭头 -->
       <!-- 左侧面板 -->
       <div class="left-panel">
-        <div
-          class="panel-itme left-panel-item"
-          @click="gotoDetail('/business-management')"
-        >
+        <div class="panel-itme left-panel-item" @click="handleAIHelp">
           <img
             class="panel-itme-img"
-            src="@/assets/images/case-management.png"
-            alt="案件管理"
+            src="@/assets/images/AI-help.png"
+            alt="AI辅助"
           />
-          <span class="panel-itme-text">案件管理</span>
+          <span class="panel-itme-text">AI辅助</span>
         </div>
+
         <div
           class="panel-itme left-panel-item"
-          @click="gotoPptDetail('数字模型')"
-        >
-          <img
-            class="panel-itme-img"
-            src="@/assets/images/digital-model.png"
-            alt="数字模型"
-          />
-          <span class="panel-itme-text">数字模型</span>
-        </div>
-      </div>
-      <!-- /左侧面板 -->
-      <!-- 中间面板 -->
-      <div class="middle-panel">
-        <div
-          class="panel-itme middle-panel-item"
           @click="gotoDetail('/legal-search')"
         >
           <img
@@ -80,14 +63,10 @@
           />
           <span class="panel-itme-text">法律检索</span>
         </div>
-        <div class="panel-itme middle-panel-item" @click="handleAIHelp">
-          <img
-            class="panel-itme-img"
-            src="@/assets/images/AI-help.png"
-            alt="AI辅助"
-          />
-          <span class="panel-itme-text">AI辅助</span>
-        </div>
+      </div>
+      <!-- /左侧面板 -->
+      <!-- 中间面板 -->
+      <div class="middle-panel">
         <div
           class="panel-itme middle-panel-item"
           @click="gotoDetail('/check-cases')"
@@ -101,21 +80,6 @@
         </div>
         <div
           class="panel-itme middle-panel-item"
-          @click="gotoPptDetail('特色品牌')"
-        >
-          <img
-            class="panel-itme-img"
-            src="@/assets/images/featured-brands.png"
-            alt="特色品牌"
-          />
-          <span class="panel-itme-text">特色品牌</span>
-        </div>
-      </div>
-      <!-- /中间面板 -->
-      <!-- 右侧面板 -->
-      <div class="right-panel">
-        <div
-          class="panel-itme right-panel-item"
           @click="gotoPptDetail('业务管理')"
         >
           <img
@@ -126,7 +90,18 @@
           <span class="panel-itme-text">业务管理</span>
         </div>
         <div
-          class="panel-itme right-panel-item"
+          class="panel-itme middle-panel-item"
+          @click="gotoDetail('/business-management')"
+        >
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/case-management.png"
+            alt="案件管理"
+          />
+          <span class="panel-itme-text">案件管理</span>
+        </div>
+        <div
+          class="panel-itme middle-panel-item"
           @click="gotoPptDetail('质量管理')"
         >
           <img
@@ -135,6 +110,32 @@
             alt="质量管理"
           />
           <span class="panel-itme-text">质量管理</span>
+        </div>
+      </div>
+      <!-- /中间面板 -->
+      <!-- 右侧面板 -->
+      <div class="right-panel">
+        <div
+          class="panel-itme right-panel-item"
+          @click="gotoPptDetail('特色品牌')"
+        >
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/featured-brands.png"
+            alt="特色品牌"
+          />
+          <span class="panel-itme-text">特色品牌</span>
+        </div>
+        <div
+          class="panel-itme right-panel-item"
+          @click="gotoPptDetail('数字模型')"
+        >
+          <img
+            class="panel-itme-img"
+            src="@/assets/images/digital-model.png"
+            alt="数字模型"
+          />
+          <span class="panel-itme-text">数字模型</span>
         </div>
       </div>
       <!-- /右侧面板 -->
@@ -351,19 +352,19 @@ const gotoDetail = (path) => {
 
 @media screen and (min-width: 1200px) and (max-width: 1439px) {
   .panel-itme-text {
-    font-size: 24px;
+    font-size: 22px;
   }
 }
 
 @media screen and (max-width: 1200px) {
   .panel-itme-text {
-    font-size: 24px;
+    font-size: 20px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .panel-itme-text {
-    font-size: 24px;
+    font-size: 18px;
   }
 }
 
