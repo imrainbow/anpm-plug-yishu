@@ -126,7 +126,13 @@ onMounted(async () => {
 })
 
 const handleReturn = () => {
-  router.back();
+  if(secondMenu.value.length > 1 && secondType.value == 2) {
+    secondType.value = 1;
+  }else {
+    router.back();
+
+  }
+  
 };
 const handleClick = (id) => {
   secondType.value = 2;
