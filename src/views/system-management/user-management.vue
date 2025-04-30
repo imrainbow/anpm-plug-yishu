@@ -126,10 +126,9 @@ const addUserForm = ref({
  
 })
 // 加密密钥，建议放在环境变量中
-const SECRET_KEY = 'your-secret-key-123'
-// 加密函数
-const encrypt = (text) => {
-  return CryptoJS.AES.encrypt(text, SECRET_KEY).toString()
+// MD5加密函数
+const md5Encrypt = (text) => {
+  return CryptoJS.MD5(text).toString().toLowerCase() // 确保输出小写
 }
 const editUserForm = ref({
   username: '',
@@ -223,11 +222,11 @@ const handleAddOk = async () => {
   // 添加表单校验
   await addUserFormRef.value.validate(async (valid) => {
     if (valid) {
-      const encryptedUsername = encrypt(addUserForm.value.username)
-        const encryptedPassword = encrypt(addUserForm.value.password)
+   
+        const encryptedPassword = md5Encrypt(addUserForm.value.password)
      
         const res = await addUser({
-          username: encryptedUsername,
+          username: addUserForm.value.username,
           password: encryptedPassword
         })
         if (res.success) {
@@ -246,10 +245,13 @@ const handleAddOk = async () => {
 const handleEditOk = async () => {
   await editUserFormRef.value.validate(async (valid) => {
     if (valid) {
+      const encryptedOldPassword = md5Encrypt(editUserForm.value.old_password)
+      const encryptedNewPassword = md5Encrypt(editUserForm.value.new_password)
+
       const res = await editPassword({
         
-        old_password: editUserForm.value.old_password,
-        new_password: editUserForm.value.new_password
+        old_password: encryptedOldPassword,
+        new_password: encryptedNewPassword
       })
       if (res.success) {
         ElMessage.success('密码修改成功')

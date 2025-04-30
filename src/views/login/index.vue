@@ -54,12 +54,11 @@ import store from '@/store'
 const router = useRouter()
 const loginFormRef = ref(null)
 
-// 加密密钥，建议放在环境变量中
-const SECRET_KEY = 'your-secret-key-123'
-// 加密函数
-const encrypt = (text) => {
-  return CryptoJS.AES.encrypt(text, SECRET_KEY).toString()
+// MD5加密函数
+const md5Encrypt = (text) => {
+  return CryptoJS.MD5(text).toString().toLowerCase() // 确保输出小写
 }
+
 
 
 const loginForm = ref({
@@ -83,11 +82,11 @@ const handleLogin = async () => {
     await loginFormRef.value.validate(async (valid) => {
       if (valid) {
         // 加密用户名和密码
-        const encryptedUsername = encrypt(loginForm.value.username)
-        const encryptedPassword = encrypt(loginForm.value.password)
+     
+        const encryptedPassword = md5Encrypt(loginForm.value.password)
         // 这里调用登录接口
         const res = await login({
-          username: encryptedUsername,
+          username: loginForm.value.username,
           password: encryptedPassword
         })
         
