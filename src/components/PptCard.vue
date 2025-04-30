@@ -1,7 +1,7 @@
 <template>
   <div class="ai-help-content">
     <div id="ai-assist" class="content-section">
-      <div class="card-body" style="background: #00357f; margin: unset">
+      <div class="card-body" style="margin: unset">
         <div class="module-grid">
           <div
             @click="handleClick(item.id)"
@@ -57,5 +57,9 @@ const handleClick = (id) => {
     cursor: pointer;
     color: #61d3ff;
   }
+}
+.card-body {
+  background-color: unset;
+  box-shadow: unset;
 }
 </style>

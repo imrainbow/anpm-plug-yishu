@@ -49,9 +49,18 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { login } from '@/api/user'
+import CryptoJS from 'crypto-js'
 import store from '@/store'
 const router = useRouter()
 const loginFormRef = ref(null)
+
+// 加密密钥，建议放在环境变量中
+const SECRET_KEY = 'your-secret-key-123'
+// 加密函数
+const encrypt = (text) => {
+  return CryptoJS.AES.encrypt(text, SECRET_KEY).toString()
+}
+
 
 const loginForm = ref({
   username: '',
@@ -73,10 +82,13 @@ const handleLogin = async () => {
   try {
     await loginFormRef.value.validate(async (valid) => {
       if (valid) {
+        // 加密用户名和密码
+        const encryptedUsername = encrypt(loginForm.value.username)
+        const encryptedPassword = encrypt(loginForm.value.password)
         // 这里调用登录接口
         const res = await login({
-          username: loginForm.value.username,
-          password: loginForm.value.password
+          username: encryptedUsername,
+          password: encryptedPassword
         })
         
         if (res.success) {

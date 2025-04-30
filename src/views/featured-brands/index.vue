@@ -20,7 +20,7 @@
     <div class="box-container" v-else>
       <div class="ai-help-content">
         <div id="ai-assist" class="content-section" v-if="secondType == 1">
-          <div class="card-body" style="background: #00357f; margin: unset">
+          <div class="card-body" style="margin: unset">
             <div class="module-grid">
               <div
                 @click="handleClick(item.id)"
@@ -165,5 +165,9 @@ const handleClick = (id) => {
 }
 .box-container {
   margin-top: 60px;
+}
+.card-body {
+  background-color: unset;
+  box-shadow: unset;
 }
 </style>

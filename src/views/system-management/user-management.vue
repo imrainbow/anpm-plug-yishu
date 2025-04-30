@@ -117,6 +117,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
 const userName = sessionStorage.getItem('userInfo')
+import CryptoJS from 'crypto-js'
 const dialogVisible = ref(false)
 const addUserForm = ref({
   username: '',
@@ -124,6 +125,12 @@ const addUserForm = ref({
   confirmPassword: '',
  
 })
+// 加密密钥，建议放在环境变量中
+const SECRET_KEY = 'your-secret-key-123'
+// 加密函数
+const encrypt = (text) => {
+  return CryptoJS.AES.encrypt(text, SECRET_KEY).toString()
+}
 const editUserForm = ref({
   username: '',
   old_password: '',
@@ -216,10 +223,12 @@ const handleAddOk = async () => {
   // 添加表单校验
   await addUserFormRef.value.validate(async (valid) => {
     if (valid) {
+      const encryptedUsername = encrypt(addUserForm.value.username)
+        const encryptedPassword = encrypt(addUserForm.value.password)
      
         const res = await addUser({
-          username: addUserForm.value.username,
-          password: addUserForm.value.password
+          username: encryptedUsername,
+          password: encryptedPassword
         })
         if (res.success) {
       ElMessage.success('注册用户成功')
