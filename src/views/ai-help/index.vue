@@ -33,12 +33,12 @@ const aiTools = [
   { name: 'Deepseek', url: 'https://chat.deepseek.com/' },
   { name: '豆包', url: 'https://www.doubao.com/' },
   { name: 'Kimi', url: 'https://kimi.moonshot.cn/' },
-  { name: '即时', url: 'https://instant.ai/' },
-  { name: '可灵', url: 'https://www.keling.ai/' },
-  { name: '天工', url: 'https://tiangong.aliyun.com/' },
+  { name: '即梦', url: 'https://jimeng.jianying.com/' },
+  { name: '可灵', url: 'https://app.klingai.com/cn/' },
+  { name: '天工', url: 'https://www.tiangong.cn/' },
   { name: 'Aippt', url: 'https://www.aippt.cn/' },
   { name: 'Processon', url: 'https://www.processon.com/' },
-  { name: '讯飞 ai', url: 'https://xinghuo.xfyun.cn/' },
+  { name: '纳米ai', url: 'https://www.n.cn/' },
 ];
 
 const handleCardClick = (item) => {

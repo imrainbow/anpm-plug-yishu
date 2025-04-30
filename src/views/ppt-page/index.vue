@@ -28,7 +28,7 @@
       <div v-for="item in imgUrlList" :key="item">
         <img
           class="ppt-item-img"
-          :src="`http://192.168.1.119:8000${item}`"
+          :src="`http://localhost:8000/${item}`"
           alt=""
         />
       </div>
@@ -36,7 +36,7 @@
     <template style="width: 100%" v-else>
       <img
         class="ppt-item-img-full"
-        :src="`http://192.168.1.119:8000${activeUrl}`"
+        :src="`http://localhost:8000/${activeUrl}`"
         @click="handleImgClick"
         alt=""
         style="width: 100%"

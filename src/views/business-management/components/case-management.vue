@@ -33,25 +33,25 @@
     <div class="case-management-table">
       <el-table :data="tableData" border>
         <el-table-column prop="name" label="案件名称" />
-        <el-table-column prop="property_type" label="涉案物品入库" />
+        <el-table-column prop="entry" label="涉案物品入库" />
         <el-table-column prop="entry_time" label="入库时间">
           <template #default="scope">
             {{ formatTimestamp(scope.row.entry_time) }}
           </template>
         </el-table-column>
-        <el-table-column prop="property_name" label="涉案物品出库" />
-        <el-table-column prop="storage_time" label="出库时间">
+        <el-table-column prop="exit" label="涉案物品出库" />
+        <el-table-column prop="exit_time" label="出库时间">
           <template #default="scope">
-            {{ formatTimestamp(scope.row.storage_time) }}
+            {{ formatTimestamp(scope.row.exit_time) }}
           </template>
         </el-table-column>
-        <el-table-column prop="exit_time" label="物品去向">
+        <el-table-column prop="property_to" label="物品去向">
           <template #default="scope">
             {{
-              scope.row.exit_time
-                ? scope.row.exit_time === ""
+              scope.row.property_to
+                ? scope.row.property_to === ""
                   ? "--"
-                  : scope.row.exit_time
+                  : scope.row.property_to
                 : "--"
             }}
           </template>
@@ -77,7 +77,7 @@
             {{ formatTimestamp(scope.row.pay_time) }}
           </template>
         </el-table-column>
-        <el-table-column prop="pay_reason" label="资金去向" />
+        <el-table-column prop="funds_to" label="资金去向" />
         <el-table-column prop="remark" label="备注" />
         <el-table-column label="操作" width="110" fixed="right">
           <template #default="scope">
@@ -121,11 +121,8 @@
           <el-input v-model="form.name" placeholder="请输入案件名称" />
         </el-form-item>
 
-        <el-form-item label="涉案物品入库" prop="property_type">
-          <el-input
-            v-model="form.property_type"
-            placeholder="请输入涉案物品入库"
-          />
+        <el-form-item label="涉案物品入库" prop="entry">
+          <el-input v-model="form.entry" placeholder="请输入涉案物品入库" />
         </el-form-item>
 
         <el-form-item label="入库时间" prop="entry_time">
@@ -139,16 +136,13 @@
           />
         </el-form-item>
 
-        <el-form-item label="涉案物品出库" prop="property_name">
-          <el-input
-            v-model="form.property_name"
-            placeholder="请输入涉案物品出库"
-          />
+        <el-form-item label="涉案物品出库" prop="exit">
+          <el-input v-model="form.exit" placeholder="请输入涉案物品出库" />
         </el-form-item>
 
-        <el-form-item label="出库时间" prop="storage_time">
+        <el-form-item label="出库时间" prop="exit_time">
           <el-date-picker
-            v-model="form.storage_time"
+            v-model="form.exit_time"
             placeholder="请选择出库时间"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
@@ -156,8 +150,8 @@
             :style="{ width: '100%' }"
           />
         </el-form-item>
-        <el-form-item label="物品去向" prop="exit_time">
-          <el-input v-model="form.exit_time" placeholder="请输入物品去向" />
+        <el-form-item label="物品去向" prop="property_to">
+          <el-input v-model="form.property_to" placeholder="请输入物品去向" />
         </el-form-item>
 
         <el-form-item label="涉案款收入金额" prop="receive_amount">
@@ -202,8 +196,8 @@
           />
         </el-form-item>
 
-        <el-form-item label="资金去向" prop="pay_reason">
-          <el-input v-model="form.pay_reason" placeholder="请输入资金去向" />
+        <el-form-item label="资金去向" prop="funds_to">
+          <el-input v-model="form.funds_to" placeholder="请输入资金去向" />
         </el-form-item>
 
         <el-form-item label="备注" prop="remark">
@@ -229,10 +223,11 @@
 import { ref , onMounted} from 'vue'
 import { Download, Upload, Plus, Edit, Delete } from '@element-plus/icons-vue'
 import * as XLSX from 'xlsx'
+import { utils, writeFile } from 'xlsx'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getPropertyList, createProperty, editProperty, deleteProperty } from '@/api/case-card'
+import { getPropertyList, createProperty, editProperty, deleteProperty,batchCreateProperty } from '@/api/case-card'
 
 const router = useRouter()
 const page = ref({
@@ -242,17 +237,18 @@ const page = ref({
 })
 const form = ref({
   name: '', // 案件名称
-  property_type: '', // 涉案物品入库
+  entry: '', // 涉案物品入库
   entry_time: '', // 入库时间
   exit_time: '', // 出库时间
-  storage_time: '', // 存储时间
-  property_name: '', // 物品名称
+  property_to: '', //物品去向
+
+  exit: '', // 物品名称
   receive_amount: '', // 收入金额
   receive_time: '', // 收入时间
   receiver: '', // 交款人
   pay_amount: '', // 支出金额
   pay_time: '', // 支出时间
-  pay_reason: '', // 支出原因
+  funds_to: '', // 支出原因
   remark: '' // 备注
 })
 const total = ref(0)
@@ -300,13 +296,13 @@ const deletePropertyAsync = async (id) => {
   try {
     const res = await deleteProperty(id)
     if(res.success){
-      ElMessage.success('删除涉案财物成功')
+      ElMessage.success('删除数据成功')
       getPropertyListAsync()
     }else {
       ElMessage.error(res.message)
     }
   } catch (error) {
-    console.error('删除涉案财物失败', error)  
+    console.error('删除数据失败', error)  
   }
 }
 const handleSave = async() => {
@@ -361,65 +357,43 @@ const handleReturn = () => {
   router.back()
 }
 const handleDownloadTemplate = () => {
-  // 创建工作簿
-  const wb = XLSX.utils.book_new()
-  
-  // 定义表头数据
+  // 定义表头
   const headers = [
-    ['涉案财物管理（案管部门）'],
-    ['案件名称', '涉案物品入库', '入库时间', '涉案物品出库', '出库时间', '物品去向', 
-     '涉案款入金额', '收入日期', '交款人', '涉案款支出金额', '支出日期', '资金去向', '备注']
-  ]
-  
-  // 创建工作表
-  const ws = XLSX.utils.aoa_to_sheet(headers)
-  
-  // 设置单元格合并
-  ws['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 12 } }
-  ]
-  
-  // 设置列宽
-  ws['!cols'] = [
-    { wch: 15 }, // 案件名称
-    { wch: 15 }, // 涉案物品入库
-    { wch: 12 }, // 入库时间
-    { wch: 15 }, // 涉案物品出库
-    { wch: 12 }, // 出库时间
-    { wch: 12 }, // 物品去向
-    { wch: 12 }, // 涉案款入金额
-    { wch: 12 }, // 收入日期
-    { wch: 10 }, // 交款人
-    { wch: 12 }, // 涉案款支出金额
-    { wch: 12 }, // 支出日期
-    { wch: 12 }, // 资金去向
-    { wch: 12 }  // 备注
+    '案件名称',
+    '涉案物品入库',
+    '入库时间',
+    '涉案物品出库',
+    '出库时间',
+    '物品去向',
+    '涉案款入金额',
+    '收入日期',
+    '交款人',
+    '涉案款支出金额',
+    '支出日期',
+    '资金去向',
+    '备注'
   ]
 
-  // 设置行高
-  ws['!rows'] = [
-    { hpt: 30 }, // 第一行（标题）的高度
-    { hpt: 25 }  // 第二行（表头）的高度
-  ]
+  // 创建工作簿
+  const wb = utils.book_new()
+  
+  // 创建工作表（只包含表头的空表格）
+  const ws = utils.aoa_to_sheet([headers])
+  
+  // 设置列宽（根据内容自适应）
+  const colWidths = headers.map(header => ({
+    wch: Math.max(12, header.length * 2)  // 最小宽度12，根据文字长度适应
+  }))
+  ws['!cols'] = colWidths
 
-  // 为所有单元格设置默认样式
-  for (let i = 0; i <= 12; i++) {
-    // 设置标题行样式
-    const titleCell = XLSX.utils.encode_cell({ r: 0, c: i })
-    if (!ws[titleCell]) ws[titleCell] = { v: '' }
-    ws[titleCell].s = {
-      font: { bold: true, sz: 14 },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      fill: { type: 'pattern', patternType: 'solid', fgColor: { rgb: '90EE90' } }
-    }
-
-    // 设置表头行样式
-    const headerCell = XLSX.utils.encode_cell({ r: 1, c: i })
-    if (!ws[headerCell]) ws[headerCell] = { v: '' }
-    ws[headerCell].s = {
+  // 设置单元格样式
+  const range = utils.decode_range(ws['!ref'])
+  for (let C = range.s.c; C <= range.e.c; ++C) {
+    const address = utils.encode_cell({ r: 0, c: C })
+    if (!ws[address]) continue
+    ws[address].s = {
       font: { bold: true },
       alignment: { horizontal: 'center', vertical: 'center' },
-      fill: { type: 'pattern', patternType: 'solid', fgColor: { rgb: '90EE90' } },
       border: {
         top: { style: 'thin' },
         bottom: { style: 'thin' },
@@ -430,24 +404,10 @@ const handleDownloadTemplate = () => {
   }
 
   // 将工作表添加到工作簿
-  XLSX.utils.book_append_sheet(wb, ws, '涉案财物管理')
-  
-  // 使用 xlsx-style 导出带样式的文件
-  const wopts = { bookType: 'xlsx', bookSST: false, type: 'array' }
-  const wbout = XLSX.write(wb, wopts)
-  
-  // 创建 Blob 对象
-  const blob = new Blob([wbout], { type: 'application/octet-stream' })
-  
-  // 创建下载链接
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = '涉案财物管理模板.xlsx'
-  
-  // 触发下载
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+  utils.book_append_sheet(wb, ws, '涉案财物（案管部门）')
+
+  // 生成并下载文件
+  writeFile(wb, '涉案财物（案管部门）模版.xlsx')
 }
 const handleEditClick = (row) => {
   dialogVisible.value = true
@@ -468,20 +428,115 @@ const handleResetForm = () => {
   formRef.value.resetFields()
   form.value = {
     name: '', // 案件名称
-    property_type: '', // 涉案物品入库
+    entry: '', // 涉案物品入库
     entry_time: '', // 入库时间
     exit_time: '', // 出库时间
     storage_time: '', // 存储时间
-    property_name: '', // 物品名称
+    exit: '', // 物品名称
     receive_amount: '', // 收入金额
     receive_time: '', // 收入时间 
     receiver: '', // 交款人
     pay_amount: '', // 支出金额
     pay_time: '', // 支出时间
-    pay_reason: '', // 支出原因
+    funds_to: '', // 支出原因
     remark: '' // 备注
   }
 }
+// 在 script setup 部分添加处理文件上传的函数
+const handleFileChange = (file) => {
+  try {
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      try {
+        // 读取Excel数据
+        const data = e.target.result
+        const workbook = XLSX.read(data, { 
+          type: 'array',
+          cellDates: true, // 将单元格日期解析为日期对象
+          dateNF: 'yyyy-mm-dd' // 指定日期格式
+        })
+        const firstSheetName = workbook.SheetNames[0]
+        const worksheet = workbook.Sheets[firstSheetName]
+        
+        // 将Excel数据转换为JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+        
+        // 定义字段映射
+        const headers = [
+          'name',           // 案件名称
+          'entry',         // 涉案物品入库
+          'entry_time',    // 入库时间
+          'exit',          // 涉案物品出库
+          'exit_time',     // 出库时间
+          'property_to',   // 物品去向
+          'receive_amount', // 涉案款入金额
+          'receive_time',  // 收入日期
+          'receiver',      // 交款人
+          'pay_amount',    // 涉案款支出金额
+          'pay_time',      // 支出日期
+          'funds_to',      // 资金去向
+          'remark'         // 备注
+        ]
+        
+        // 跳过表头，处理数据行
+        const processedData = jsonData.slice(1).map(row => {
+          const item = {}
+          headers.forEach((header, index) => {
+            // 处理特殊字段
+            if (['receive_amount', 'pay_amount'].includes(header)) {
+              // 确保金额为数字
+              item[header] = row[index] ? Number(row[index]) : null
+            } else if (['entry_time', 'exit_time', 'receive_time', 'pay_time'].includes(header)) {
+              // 处理日期格式，修复时区问题
+              if (row[index]) {
+                // 如果是Date对象，转换为正确的时间字符串
+                if (row[index] instanceof Date) {
+                  item[header] = dayjs(row[index]).format('YYYY-MM-DD')
+                } else {
+                  // 如果是字符串，直接使用
+                  item[header] = row[index]
+                }
+              } else {
+                item[header] = null
+              }
+            } else {
+              // 其他字段
+              item[header] = row[index] || ''
+            }
+          })
+          return item
+        })
+
+        // 数据验证
+        if (processedData.length === 0) {
+          ElMessage.warning('Excel文件中没有数据')
+          return
+        }
+
+        // 调用批量创建API
+        const res = await batchCreateProperty(processedData)
+        if (res.success) {
+          ElMessage.success('数据导入成功')
+          // 刷新表格数据
+          getPropertyListAsync()
+        } else {
+          ElMessage.error(res.message || '数据导入失败')
+        }
+      } catch (error) {
+        console.error('处理Excel文件失败：', error)
+        ElMessage.error('处理Excel文件失败')
+      }
+    }
+    
+    // 开始读取文件
+    reader.readAsArrayBuffer(file.raw)
+  } catch (error) {
+    console.error('文件上传失败：', error)
+    ElMessage.error('文件上传失败')
+  }
+}
+
+
 
 </script>
 

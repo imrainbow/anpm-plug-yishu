@@ -1,14 +1,14 @@
 <template>
   <div class="login-container">
     <!-- 背景动效 -->
-    <div class="bg-container">
+    <!-- <div class="bg-container">
       <div class="circle-container">
         <div class="circle circle-1"></div>
         <div class="circle circle-2"></div>
         <div class="circle circle-3"></div>
       </div>
       <div class="grid-container"></div>
-    </div>
+    </div> -->
 
     <!-- 登录面板 -->
     <div class="login-box">
@@ -37,8 +37,8 @@
 
     <!-- logo标题 -->
     <div class="logo-title">
-      <img src="@/assets/images/logo.png" alt="logo" />
-      <span>黟数检光数智管理平台</span>
+      <img class="logo-img" src="@/assets/images/logo.png" alt="logo" />
+      <span class="gradient-text">黟数检光数智管理平台</span>
     </div>
   </div>
 </template>
@@ -102,7 +102,9 @@ const handleLogin = async () => {
   height: 100vh;
   width: 100vw;
   position: relative;
-  background: linear-gradient(135deg, #1a2b3c 0%, #0d1b2a 100%);
+  // background: linear-gradient(135deg, #1a2b3c 0%, #0d1b2a 100%);
+  background: url("@/assets/login-bg3.jpg") no-repeat center center;
+  background-size: cover;
   overflow: hidden;
 
   // 背景动效容器
@@ -188,12 +190,12 @@ const handleLogin = async () => {
 
   // 登录框样式优化
   .login-box {
-    padding: 40px;
-    width: 420px;
-    background: rgba(240, 238, 238, 0.1);
+    // padding: 40px;
+    // width: 420px;
+    background: rgba(240, 238, 238, 0.3);
     backdrop-filter: blur(10px);
     position: absolute;
-    right: 10%;
+    // right: 10%;
     top: 50%;
     transform: translateY(-50%);
     border-radius: 15px;
@@ -245,19 +247,82 @@ const handleLogin = async () => {
     align-items: center;
     z-index: 2;
 
-    img {
-      width: 100px;
+    .logo-img {
+      height: 50px;
       filter: drop-shadow(0 0 10px rgba(32, 128, 255, 0.5));
     }
-
-    span {
+    .title-img {
+      height: 35px;
+      margin-left: 10px;
+    }
+    .gradient-text {
       font-family: "AliHYAiHei";
       font-size: 30px;
-      color: #fff;
-      font-weight: 600;
-      text-shadow: 0 0 10px rgba(32, 128, 255, 0.5);
+      background: linear-gradient(to right, #fff, rgb(97, 211, 255));
+      // color: #fff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
       margin-left: 15px;
+      font-weight: 700;
     }
+
+    // span {
+    //   font-family: "AliHYAiHei";
+    //   font-size: 30px;
+    //   color: #fff;
+    //   text-shadow: 0 0 10px rgba(32, 128, 255, 0.5);
+    // }
+  }
+}
+/* 大屏幕 */
+@media screen and (min-width: 1920px) {
+  .login-box {
+    width: 420px;
+    padding: 50px;
+    right: 7%;
+    padding: 40px;
+  }
+}
+
+/* 普通桌面屏幕 */
+@media screen and (max-width: 1440px) {
+  .login-box {
+    padding: 30px;
+    width: 400px;
+    right: 6%;
+  }
+}
+
+/* 小屏幕桌面或平板 */
+@media screen and (max-width: 1200px) {
+  .login-box {
+    padding: 30px;
+    width: 360px;
+    padding: 30px;
+    right: 5%;
+  }
+}
+
+/* 平板竖屏或大手机 */
+@media screen and (max-width: 768px) {
+  .login-box {
+    padding: 30px;
+    width: 90%;
+    right: 50%;
+    transform: translateX(50%);
+    margin: 0 auto;
+  }
+}
+
+/* 手机屏幕 */
+@media screen and (max-width: 480px) {
+  .login-box {
+    width: 95%;
+    padding: 20px;
+    right: 50%;
+    transform: translateX(50%);
   }
 }
 

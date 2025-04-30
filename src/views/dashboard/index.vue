@@ -73,7 +73,7 @@
         >
           <img
             class="panel-itme-img"
-            src="@/assets/images/check-cases.png"
+            src="@/assets/images/check-cases1.png"
             alt="检查办案"
           />
           <span class="panel-itme-text">检察办案</span>
