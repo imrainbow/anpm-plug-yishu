@@ -78,10 +78,10 @@
           <el-input v-model="addUserForm.username" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="addUserForm.password" />
+          <el-input v-model="addUserForm.password" type="password" />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input v-model="addUserForm.confirmPassword" />
+          <el-input v-model="addUserForm.confirmPassword" type="password" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -108,10 +108,10 @@
           <el-input v-model="editUserForm.username" disabled />
         </el-form-item>
         <el-form-item label="旧密码" prop="old_password">
-          <el-input v-model="editUserForm.old_password" />
+          <el-input v-model="editUserForm.old_password" type="password" />
         </el-form-item>
         <el-form-item label="新密码" prop="new_password">
-          <el-input v-model="editUserForm.new_password" />
+          <el-input v-model="editUserForm.new_password" type="password" />
         </el-form-item>
       </el-form>
       <template #footer>

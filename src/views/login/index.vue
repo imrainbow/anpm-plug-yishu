@@ -269,7 +269,11 @@ const handleLogin = async () => {
     .gradient-text {
       font-family: "AliHYAiHei";
       font-size: 30px;
-      background: linear-gradient(to right, #fff, rgb(97, 211, 255));
+      background: linear-gradient(
+        to right,
+        rgb(97, 211, 255),
+        rgb(97, 211, 255)
+      );
       // color: #fff;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
