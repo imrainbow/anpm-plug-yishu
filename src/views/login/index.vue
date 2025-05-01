@@ -296,6 +296,14 @@ const handleLogin = async () => {
     padding: 40px;
   }
 }
+@media screen and (max-width: 1919px) {
+  .login-box {
+    width: 420px;
+    padding: 50px;
+    right: 7%;
+    padding: 40px;
+  }
+}
 
 /* 普通桌面屏幕 */
 @media screen and (max-width: 1440px) {
