@@ -11,7 +11,21 @@
     <div class="box-container" v-if="secondMenu.length <= 1">
       <div class="ppt-card-container">
         <PptCard v-if="filesList.length > 0" :files="filesList" />
-        <div class="no-data-container" v-else>
+        <div class="pagination-ppt-container" v-if="total > 10">
+          <el-pagination
+            v-model:current-page="queryData.page"
+            v-model:page-size="queryData.pageSize"
+            :page-sizes="[10, 20, 50, 100, 200]"
+            :size="size"
+            :disabled="disabled"
+            :background="background"
+            layout="prev, pager, next"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+        <div class="no-data-container" v-if="filesList.length == 0">
           <NoData />
         </div>
       </div>
@@ -39,7 +53,22 @@
         </div>
         <div class="ppt-card-container" v-else>
           <PptCard v-if="filesList.length > 0" :files="filesList" />
-          <div class="no-data-container" v-else>
+          <div class="pagination-ppt-container" v-if="total > 10">
+            <el-pagination
+              v-model:current-page="queryData.page"
+              v-model:page-size="queryData.pageSize"
+              :page-sizes="[10, 20, 50, 100, 200]"
+              :size="size"
+              :disabled="disabled"
+              :background="background"
+              layout="prev, pager, next"
+              :total="total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+
+          <div class="no-data-container" v-if="filesList.length == 0">
             <NoData />
           </div>
         </div>
@@ -76,6 +105,7 @@ const queryData = ref({
   page: 1,
   page_size: 10
 })
+const total = ref(0);
 const pptMenuList = ref([]);
 const getPptMenuListAsync = async () => {
   const res = await getPptMenuList();
@@ -107,6 +137,7 @@ const filesList = ref([]);
 const getFilesByMenuIDAsync = async () => {
   const res = await getFilesByMenuID(queryData.value);
   filesList.value = res.data.files;
+  total.value = res.data.total;
   console.log(res, 'res');
 }
 const handleTabClick = async () => {
@@ -124,6 +155,15 @@ onMounted(async () => {
   await getPptMenuListAsync();
   await getFilesByMenuIDAsync();
 })
+const handleSizeChange = (size) => {
+  queryData.value.page = 1;
+  queryData.value.page_size = size;
+  getFilesByMenuIDAsync();
+}
+const handleCurrentChange = (page) => {
+  queryData.value.page = page;
+  getFilesByMenuIDAsync();
+}
 
 const handleReturn = () => {
   if(secondMenu.value.length > 1 && secondType.value == 2) {
