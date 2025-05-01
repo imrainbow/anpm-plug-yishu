@@ -46,6 +46,20 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pagination-container">
+        <el-pagination
+          v-model:current-page="queryData.page"
+          v-model:page-size="queryData.pageSize"
+          :page-sizes="[10, 20, 50, 100, 200]"
+          :size="size"
+          :disabled="disabled"
+          :background="background"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
     <!-- 新增弹框 -->
     <el-dialog
@@ -188,6 +202,15 @@ const handleEditClick = (row) => {
 onMounted(() => {
   getTableData()
 })
+const handleSizeChange = (size) => {
+  queryData.value.page = 1
+  queryData.value.pageSize = size
+  getTableData()
+}
+const handleCurrentChange = (pageNo) => {
+  queryData.value.page = pageNo
+  getTableData()
+}
 
 // 自定义校验密码是否一致
 const validatePass = (rule, value, callback) => {

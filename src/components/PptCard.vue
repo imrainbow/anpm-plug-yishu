@@ -13,7 +13,11 @@
               box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
             "
           >
-            <span>{{ item.title }}</span>
+            <img
+              class="cover-img"
+              :src="`http://localhost:8000'${item.cover_image}`"
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -61,5 +65,9 @@ const handleClick = (id) => {
 .card-body {
   background-color: unset;
   box-shadow: unset;
+}
+.cover-img {
+  width: 100%;
+  height: 100%;
 }
 </style>
