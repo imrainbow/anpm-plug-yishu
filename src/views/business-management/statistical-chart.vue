@@ -60,31 +60,39 @@ const lawyerStatistic = ref([]);
 const getCaseTypeStatisticData = async () => {
   const res = await getCaseTypeStatistic();
   if(res.success){
+    if(res.data && res.data.length > 0){
     caseTypeStatistic.value = res.data.map(item => ({
       label: item.case_type,
       value: item.count
     }));
   }
+}
 };
 
 const getDepartmentStatisticData = async () => {
   const res = await getDepartmentStatistic();
   if(res.success){
+    if(res.data && res.data.length > 0){
     departmentStatistic.value = res.data.map(item => ({
       label: item.handling_dept,
       value: item.count
     }));
   }
+}
 };
 
 const getLawyerStatisticData = async () => {
   const res = await getLawyerStatistic();
   if(res.success){
+    if(res.data && res.data.length > 0){
     lawyerStatistic.value = res.data.map(item => ({
       label: item.prosecutor,
       value: item.count
     }));
+  }else {
+    lawyerStatistic.value = [];
   }
+}
 };
 
 onMounted(() => {

@@ -1,5 +1,12 @@
 <template>
-  <div ref="chartDom" class="echarts-card"></div>
+  <div
+    class="echarts-no-data"
+    v-if="!props.echartsData || props.echartsData.length === 0"
+  >
+    <img class="no-data-img" src="@/assets/no-data.png" alt="" />
+    <div class="no-data-text">暂无数据</div>
+  </div>
+  <div ref="chartDom" class="echarts-card" v-else></div>
 </template>
 
 <script setup>
@@ -35,6 +42,8 @@ const initChart = async () => {
         type: 'shadow'
       }
     },
+    
+
     grid: {
       left: '3%',
       right: '4%',
@@ -108,10 +117,26 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .echarts-card {
   width: 100%;
   height: 380px;
   margin: 0 auto;
+}
+.echarts-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  .no-data-img {
+    width: 180px;
+  }
+  .no-data-text {
+    margin-top: 10px;
+    margin-left: -50px;
+    color: #61d3ff;
+  }
 }
 </style>
