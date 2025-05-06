@@ -14,7 +14,7 @@
     </el-tooltip>
 
     <iframe
-      src="https://law.wkinfo.com.cn/"
+      src="http://59.203.180.37:8990/digital-yx/login"
       width="100%"
       height="100%"
       frameborder="0"
