@@ -541,9 +541,14 @@ const handleDeleteClick = (row) => {
   ElMessageBox.confirm('确定删除该涉案财物吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-  }).then(() => {
-    deletePropertyAsync(row.id)
   })
+    .then(() => {
+      deletePropertyAsync(row.id)
+    })
+    .catch((e) => {
+      // 用户点击取消或关闭弹窗会进入这里
+      console.log('取消')
+    })
 }
 const handleResetForm = () => {
 
