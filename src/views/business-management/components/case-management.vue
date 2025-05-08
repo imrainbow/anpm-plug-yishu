@@ -31,54 +31,112 @@
     <!-- 表格 -->
 
     <div class="case-management-table">
-      <el-table :data="tableData" border>
-        <el-table-column prop="name" label="案件名称" />
-        <el-table-column prop="entry" label="涉案物品入库" />
-        <el-table-column prop="entry_time" label="入库时间">
-          <template #default="scope">
-            {{ formatTimestamp(scope.row.entry_time) }}
-          </template>
+      <el-table :data="tableData" border height="calc(100vh - 280px)">
+        <template #empty>
+          <div class="empty-table">
+            <img class="empty-img" src="@/assets/no-data.png" alt="" />
+            <div class="empty-text">暂无数据</div>
+          </div>
+        </template>
+        <el-table-column
+          prop="name"
+          label="案件名称"
+          min-width="120"
+          fixed="left"
+        />
+        <el-table-column label="涉案财物管理（案管部门）" align="center">
+          <el-table-column prop="entry" label="涉案物品入库" min-width="120" />
+          <el-table-column prop="entry_time" label="入库时间" min-width="90">
+            <template #default="scope">
+              {{ formatTimestamp(scope.row.entry_time) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="exit" label="涉案物品出库" min-width="120" />
+          <el-table-column prop="exit_time" label="出库时间" min-width="90">
+            <template #default="scope">
+              {{ formatTimestamp(scope.row.exit_time) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="property_to" label="物品去向" min-width="90">
+            <template #default="scope">
+              {{
+                scope.row.property_to
+                  ? scope.row.property_to === ""
+                    ? "--"
+                    : scope.row.property_to
+                  : "--"
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="receive_amount"
+            label="涉案款收入金额"
+            min-width="130"
+          >
+            <template #default="scope">
+              {{ formatMoney(scope.row.receive_amount) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="receive_time" label="收入日期" min-width="90">
+            <template #default="scope">
+              {{ formatTimestamp(scope.row.receive_time) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="receiver" label="交款人" min-width="90" />
+          <el-table-column
+            prop="pay_amount"
+            label="涉案款支出金额"
+            min-width="130"
+          >
+            <template #default="scope">
+              {{ formatMoney(scope.row.pay_amount) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="pay_time" label="支出日期" min-width="90">
+            <template #default="scope">
+              {{ formatTimestamp(scope.row.pay_time) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="funds_to" label="资金去向" min-width="90" />
+          <el-table-column prop="remark" label="案管备注" min-width="150" />
         </el-table-column>
-        <el-table-column prop="exit" label="涉案物品出库" />
-        <el-table-column prop="exit_time" label="出库时间">
-          <template #default="scope">
-            {{ formatTimestamp(scope.row.exit_time) }}
-          </template>
+        <el-table-column label="涉案款管理（财物部门）" align="center">
+          <el-table-column prop="in_time" label="入库日期" min-width="150">
+            <template #default="{ row }">
+              {{ formatTimestamp(row.in_time) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="in_amount" label="入库金额" min-width="120">
+            <template #default="{ row }">
+              {{ row.in_amount?.toFixed(2) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="in_source" label="入库来源" min-width="120">
+            <template #default="{ row }">
+              {{ row.in_source === "" ? "--" : row.in_source }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="out_time" label="出库日期" min-width="150">
+            <template #default="{ row }">
+              {{ formatTimestamp(row.out_time) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="out_amount" label="出库金额" min-width="120">
+            <template #default="{ row }">
+              {{ row.out_amount?.toFixed(2) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="out_to" label="出库去向" min-width="120">
+            <template #default="{ row }">
+              {{ row.out_to === "" ? "--" : row.out_to }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="remarks" label="财物备注" min-width="150">
+            <template #default="{ row }">
+              {{ row.remarks === "" ? "--" : row.remarks }}
+            </template>
+          </el-table-column>
         </el-table-column>
-        <el-table-column prop="property_to" label="物品去向">
-          <template #default="scope">
-            {{
-              scope.row.property_to
-                ? scope.row.property_to === ""
-                  ? "--"
-                  : scope.row.property_to
-                : "--"
-            }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="receive_amount" label="涉案款收入金额">
-          <template #default="scope">
-            {{ formatMoney(scope.row.receive_amount) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="receive_time" label="收入日期">
-          <template #default="scope">
-            {{ formatTimestamp(scope.row.receive_time) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="receiver" label="交款人" />
-        <el-table-column prop="pay_amount" label="涉案款支出金额">
-          <template #default="scope">
-            {{ formatMoney(scope.row.pay_amount) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="pay_time" label="支出日期">
-          <template #default="scope">
-            {{ formatTimestamp(scope.row.pay_time) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="funds_to" label="资金去向" />
-        <el-table-column prop="remark" label="备注" />
         <el-table-column label="操作" width="110" fixed="right">
           <template #default="scope">
             <el-button
@@ -97,7 +155,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="case-management-pagination">
+      <div class="case-management-pagination" v-if="total > 0">
         <el-pagination
           v-model:current-page="page.page"
           v-model:page-size="page.page_size"
@@ -200,13 +258,48 @@
           <el-input v-model="form.funds_to" placeholder="请输入资金去向" />
         </el-form-item>
 
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="案管备注" prop="remark">
           <el-input
             v-model="form.remark"
             type="textarea"
             placeholder="请输入备注"
             :rows="3"
           />
+        </el-form-item>
+        <el-form-item label="入库日期">
+          <el-date-picker
+            style="width: 100%"
+            v-model="form.in_time"
+            type="date"
+            format="YYYY年MM月DD日"
+            value-format="YYYY-MM-DD"
+            placeholder="选择入库日期"
+          />
+        </el-form-item>
+        <el-form-item label="入库金额" prop="in_amount">
+          <el-input v-model.number="form.in_amount" />
+        </el-form-item>
+        <el-form-item label="入库来源">
+          <el-input v-model="form.in_source" />
+        </el-form-item>
+        <el-form-item label="出库日期">
+          <el-date-picker
+            style="width: 100%"
+            v-model="form.out_time"
+            type="date"
+            format="YYYY年MM月DD日"
+            value-format="YYYY-MM-DD"
+            placeholder="选择出库日期"
+          />
+        </el-form-item>
+        <el-form-item label="出库金额" prop="out_amount">
+          <el-input v-model.number="form.out_amount" />
+        </el-form-item>
+        <el-form-item label="出库去向">
+          <el-input v-model="form.out_to" />
+        </el-form-item>
+        <el-form-item label="财务备注">
+          <el-input v-model="form.remarks" type="textarea" rows="3" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -249,7 +342,14 @@ const form = ref({
   pay_amount: '', // 支出金额
   pay_time: '', // 支出时间
   funds_to: '', // 支出原因
-  remark: '' // 备注
+  remark: '', // 备注
+  in_time: '',
+    in_amount: null,
+    in_source: '',
+    out_time: '',
+    out_amount: null,
+    out_to: '',
+    remarks: ''
 })
 const total = ref(0)
 const tableData = ref([])
@@ -356,59 +456,90 @@ onMounted(() => {
 const handleReturn = () => {
   router.back()
 }
+
+
 const handleDownloadTemplate = () => {
-  // 定义表头
-  const headers = [
-    '案件名称',
-    '涉案物品入库',
-    '入库时间',
-    '涉案物品出库',
-    '出库时间',
-    '物品去向',
-    '涉案款入金额',
-    '收入日期',
-    '交款人',
-    '涉案款支出金额',
-    '支出日期',
-    '资金去向',
-    '备注'
-  ]
+  // 多行表头内容（完全对齐截图，无空行空列）
+  const aoa = [
+    [
+      '案件名称',
+      '涉案财物物管理（案管部门）', '', '', '', '', '', '', '', '', '', '', '', '',
+      '涉案款管理（财务部门）', '', '', '', '', '', '', ''
+    ],
+    [
+      '案件名称', '涉案物品入库', '入库时间', '涉案物品出库', '出库时间', '物品去向',
+      '涉案款收入金额', '收入日期', '交款人', '涉案款支出金额', '支出日期', '资金去向', '案管备注',
+      '入库日期', '入库金额', '入库来源', '出库日期', '出库金额', '出库去向', '财务备注'
+    ]
+  ];
+  // 生成空数据行
+  for (let i = 0; i < 10; i++) aoa.push(Array(20).fill(''));
 
-  // 创建工作簿
-  const wb = utils.book_new()
-  
-  // 创建工作表（只包含表头的空表格）
-  const ws = utils.aoa_to_sheet([headers])
-  
-  // 设置列宽（根据内容自适应）
-  const colWidths = headers.map(header => ({
-    wch: Math.max(12, header.length * 2)  // 最小宽度12，根据文字长度适应
-  }))
-  ws['!cols'] = colWidths
+  // 创建工作表
+  const ws = utils.aoa_to_sheet(aoa);
 
-  // 设置单元格样式
-  const range = utils.decode_range(ws['!ref'])
-  for (let C = range.s.c; C <= range.e.c; ++C) {
-    const address = utils.encode_cell({ r: 0, c: C })
-    if (!ws[address]) continue
-    ws[address].s = {
+  // 合并单元格
+  ws['!merges'] = [
+    // “案件名称”两行合并 A1:A2
+    { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } },
+    // “涉案财物物管理（案管部门）” B1:N1
+    { s: { r: 0, c: 1 }, e: { r: 0, c: 13 } },
+    // “涉案款管理（财务部门）” O1:U1
+    { s: { r: 0, c: 14 }, e: { r: 0, c: 20 } }
+  ];
+
+  // 绿色背景（涉案财物物管理）
+  for (let c = 1; c <= 13; c++) {
+    ws[utils.encode_cell({ r: 0, c })].s = {
+      fill: { fgColor: { rgb: 'C6EFCE' } },
       font: { bold: true },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      border: {
-        top: { style: 'thin' },
-        bottom: { style: 'thin' },
-        left: { style: 'thin' },
-        right: { style: 'thin' }
+      alignment: { horizontal: 'center', vertical: 'center' }
+    };
+  }
+  // 橙色背景（涉案款管理）
+  for (let c = 14; c <= 20; c++) {
+    ws[utils.encode_cell({ r: 0, c })].s = {
+      fill: { fgColor: { rgb: 'FFD966' } },
+      font: { bold: true },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    };
+  }
+  // 一级表头左侧（案件名称）白底
+  ws[utils.encode_cell({ r: 0, c: 0 })].s = {
+    font: { bold: true },
+    alignment: { horizontal: 'center', vertical: 'center' }
+  };
+  // 二级表头全加粗、居中、边框
+  for (let c = 0; c <= 19; c++) {
+    const cell = ws[utils.encode_cell({ r: 1, c })];
+    if (cell) {
+      cell.s = {
+        font: { bold: true },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: {
+          top: { style: 'thin' },
+          bottom: { style: 'thin' },
+          left: { style: 'thin' },
+          right: { style: 'thin' }
+        }
+      };
+      // 黄色高亮（如需可自定义更多字段）
+      if (c === 6) { // “涉案款收入金额”
+        cell.s.fill = { fgColor: { rgb: 'FFFF00' } };
       }
     }
   }
 
-  // 将工作表添加到工作簿
-  utils.book_append_sheet(wb, ws, '涉案财物（案管部门）')
+  // 设置列宽
+  ws['!cols'] = Array(20).fill({ wch: 14 });
 
-  // 生成并下载文件
-  writeFile(wb, '涉案财物（案管部门）模版.xlsx')
-}
+  // 生成工作簿
+  const wb = utils.book_new();
+  utils.book_append_sheet(wb, ws, '案件模版');
+
+  // 下载
+  writeFile(wb, '案件导入模版.xlsx');
+};
 const handleEditClick = (row) => {
   dialogVisible.value = true
   console.log('编辑', row)

@@ -3,7 +3,7 @@
   <div class="ai-help-container">
     <div class="business-management-content">
       <CaseManagement v-if="tableType == 1" />
-      <FinanceDepartment v-else />
+      <!-- <FinanceDepartment v-else /> -->
     </div>
   </div>
 </template>

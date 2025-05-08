@@ -65,7 +65,7 @@
         </el-table-column>
       </el-table>
       <!-- 分页 -->
-      <div class="pagination-container">
+      <div class="pagination-container" v-if="total > 0">
         <el-pagination
           v-model:current-page="page.page"
           v-model:page-size="page.pageSize"

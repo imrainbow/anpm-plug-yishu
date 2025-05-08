@@ -11,9 +11,9 @@
     </el-tooltip>
     <div class="card-body" v-if="type == 1">
       <div class="card-body-content">
-        <div class="module-card" @click="handleTableClick(1)">案管部门</div>
+        <div class="module-card" @click="handleTableClick(1)">涉案财物填录</div>
 
-        <div class="module-card" @click="handleTableClick(2)">财物部门</div>
+        <!-- <div class="module-card" @click="handleTableClick(2)">财部门</div> -->
       </div>
     </div>
 
