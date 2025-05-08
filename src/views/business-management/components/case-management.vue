@@ -100,7 +100,7 @@
           <el-table-column prop="funds_to" label="资金去向" min-width="90" />
           <el-table-column prop="remark" label="案管备注" min-width="150" />
         </el-table-column>
-        <el-table-column label="涉案款管理（财物部门）" align="center">
+        <el-table-column label="涉案款管理（财务部门）" align="center">
           <el-table-column prop="in_time" label="入库日期" min-width="150">
             <template #default="{ row }">
               {{ formatTimestamp(row.in_time) }}
@@ -131,7 +131,7 @@
               {{ row.out_to === "" ? "--" : row.out_to }}
             </template>
           </el-table-column>
-          <el-table-column prop="remarks" label="财物备注" min-width="150">
+          <el-table-column prop="remarks" label="财务备注" min-width="150">
             <template #default="{ row }">
               {{ row.remarks === "" ? "--" : row.remarks }}
             </template>
@@ -427,26 +427,26 @@ const createPropertyAsync = async () => {
   try {
     const res = await createProperty(form.value)
     if(res.success){
-      ElMessage.success('新增涉案财物成功')
+      ElMessage.success('新增数据成功')
       dialogVisible.value = false
       getPropertyListAsync()
     }
   } catch (error) {
-    console.error('新增涉案财物失败', error)
+    console.error('新增涉案数据失败', error)
   }
 }
 const editPropertyAsync = async () => {
   try {
     const res = await editProperty(form.value)
     if(res.success){
-      ElMessage.success('编辑涉案财物成功')
+      ElMessage.success('编辑数据成功')
       dialogVisible.value = false
       getPropertyListAsync()
     }else {
       ElMessage.error(res.message)
     }
   } catch (error) {
-    console.error('编辑涉案财物失败', error)
+    console.error('编辑数据失败', error)
   }
 }
 onMounted(() => {
@@ -538,7 +538,7 @@ const handleEditClick = (row) => {
   form.value = dataCopy
 }
 const handleDeleteClick = (row) => {
-  ElMessageBox.confirm('确定删除该涉案财物吗？', '提示', {
+  ElMessageBox.confirm('确定删除该数据吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
   })
