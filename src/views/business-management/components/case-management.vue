@@ -459,10 +459,9 @@ const handleReturn = () => {
 
 
 const handleDownloadTemplate = () => {
-  // 多行表头内容（完全对齐截图，无空行空列）
+  // 多行表头内容（无空列，从A列开始）
   const aoa = [
     [
-      '案件名称',
       '涉案财物物管理（案管部门）', '', '', '', '', '', '', '', '', '', '', '', '',
       '涉案款管理（财务部门）', '', '', '', '', '', '', ''
     ],
@@ -475,21 +474,18 @@ const handleDownloadTemplate = () => {
   // 生成空数据行
   for (let i = 0; i < 10; i++) aoa.push(Array(20).fill(''));
 
-  // 创建工作表
   const ws = utils.aoa_to_sheet(aoa);
 
   // 合并单元格
   ws['!merges'] = [
-    // “案件名称”两行合并 A1:A2
-    { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } },
-    // “涉案财物物管理（案管部门）” B1:N1
-    { s: { r: 0, c: 1 }, e: { r: 0, c: 13 } },
-    // “涉案款管理（财务部门）” O1:U1
-    { s: { r: 0, c: 14 }, e: { r: 0, c: 20 } }
+    // “涉案财物物管理（案管部门）” A1:M1
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 12 } },
+    // “涉案款管理（财务部门）” N1:T1
+    { s: { r: 0, c: 13 }, e: { r: 0, c: 19 } }
   ];
 
   // 绿色背景（涉案财物物管理）
-  for (let c = 1; c <= 13; c++) {
+  for (let c = 0; c <= 12; c++) {
     ws[utils.encode_cell({ r: 0, c })].s = {
       fill: { fgColor: { rgb: 'C6EFCE' } },
       font: { bold: true },
@@ -497,18 +493,13 @@ const handleDownloadTemplate = () => {
     };
   }
   // 橙色背景（涉案款管理）
-  for (let c = 14; c <= 20; c++) {
+  for (let c = 13; c <= 19; c++) {
     ws[utils.encode_cell({ r: 0, c })].s = {
       fill: { fgColor: { rgb: 'FFD966' } },
       font: { bold: true },
       alignment: { horizontal: 'center', vertical: 'center' }
     };
   }
-  // 一级表头左侧（案件名称）白底
-  ws[utils.encode_cell({ r: 0, c: 0 })].s = {
-    font: { bold: true },
-    alignment: { horizontal: 'center', vertical: 'center' }
-  };
   // 二级表头全加粗、居中、边框
   for (let c = 0; c <= 19; c++) {
     const cell = ws[utils.encode_cell({ r: 1, c })];
@@ -524,7 +515,7 @@ const handleDownloadTemplate = () => {
         }
       };
       // 黄色高亮（如需可自定义更多字段）
-      if (c === 6) { // “涉案款收入金额”
+      if (c === 6) { // “涉案款收入金额”第7列
         cell.s.fill = { fgColor: { rgb: 'FFFF00' } };
       }
     }
@@ -573,82 +564,101 @@ const handleResetForm = () => {
     remark: '' // 备注
   }
 }
-// 在 script setup 部分添加处理文件上传的函数
 const handleFileChange = (file) => {
   try {
     const reader = new FileReader()
     reader.onload = async (e) => {
       try {
-        // 读取Excel数据
         const data = e.target.result
-        const workbook = XLSX.read(data, { 
-          type: 'array',
-          cellDates: true, // 将单元格日期解析为日期对象
-          dateNF: 'yyyy-mm-dd' // 指定日期格式
-        })
+        const workbook = XLSX.read(data, { type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd' })
         const firstSheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[firstSheetName]
-        
-        // 将Excel数据转换为JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-        
-        // 定义字段映射
-        const headers = [
-          'name',           // 案件名称
-          'entry',         // 涉案物品入库
-          'entry_time',    // 入库时间
-          'exit',          // 涉案物品出库
-          'exit_time',     // 出库时间
-          'property_to',   // 物品去向
-          'receive_amount', // 涉案款入金额
-          'receive_time',  // 收入日期
-          'receiver',      // 交款人
-          'pay_amount',    // 涉案款支出金额
-          'pay_time',      // 支出日期
-          'funds_to',      // 资金去向
-          'remark'         // 备注
+
+        // 目标字段
+        const targetFields = [
+          'name', 'entry', 'entry_time', 'exit', 'exit_time', 'property_to',
+          'receive_amount', 'receive_time', 'receiver',
+          'pay_amount', 'pay_time', 'funds_to', 'remark',
+          'in_time', 'in_amount', 'in_source',
+          'out_time', 'out_amount', 'out_to', 'remarks'
         ]
-        
-        // 跳过表头，处理数据行
-        const processedData = jsonData.slice(1).map(row => {
-          const item = {}
-          headers.forEach((header, index) => {
-            // 处理特殊字段
-            if (['receive_amount', 'pay_amount'].includes(header)) {
-              // 确保金额为数字
-              item[header] = row[index] ? Number(row[index]) : null
-            } else if (['entry_time', 'exit_time', 'receive_time', 'pay_time'].includes(header)) {
-              // 处理日期格式，修复时区问题
-              if (row[index]) {
-                // 如果是Date对象，转换为正确的时间字符串
-                if (row[index] instanceof Date) {
-                  item[header] = dayjs(row[index]).format('YYYY-MM-DD')
-                } else {
-                  // 如果是字符串，直接使用
-                  item[header] = row[index]
-                }
-              } else {
-                item[header] = null
-              }
-            } else {
-              // 其他字段
-              item[header] = row[index] || ''
-            }
-          })
-          return item
+
+        // 1. 自动识别表头（假设表头在前两行之内）
+        let headerRowIdx = 0
+        let headerRow = jsonData[headerRowIdx]
+        // 如果第一行不是表头，尝试第二行
+        if (!headerRow || headerRow.filter(Boolean).length < 3) {
+          headerRowIdx = 1
+          headerRow = jsonData[headerRowIdx]
+        }
+        // 建立Excel表头与目标字段的映射关系（你可根据实际表头调整）
+        const excelToTargetMap = {
+          '案件名称': 'name',
+          '涉案物品入库': 'entry',
+          '入库时间': 'entry_time',
+          '涉案物品出库': 'exit',
+          '出库时间': 'exit_time',
+          '物品去向': 'property_to',
+          '涉案款收入金额': 'receive_amount',
+          '收入日期': 'receive_time',
+          '交款人': 'receiver',
+          '涉案款支出金额': 'pay_amount',
+          '支出日期': 'pay_time',
+          '资金去向': 'funds_to',
+          '案管备注': 'remark',
+          '入库日期': 'in_time',
+          '入库金额': 'in_amount',
+          '入库来源': 'in_source',
+          '出库日期': 'out_time',
+          '出库金额': 'out_amount',
+          '出库去向': 'out_to',
+          '财务备注': 'remarks', // 如有第二个备注字段
+        }
+
+        // 2. 生成表头索引映射
+        const colMap = {}
+        headerRow.forEach((col, idx) => {
+          if (excelToTargetMap[col]) {
+            colMap[excelToTargetMap[col]] = idx
+          }
         })
 
-        // 数据验证
+        // 3. 遍历数据行，统一映射
+        const processedData = []
+        for (let i = headerRowIdx + 1; i < jsonData.length; i++) {
+          const row = jsonData[i]
+          // 跳过空行
+          if (!row || row.length === 0 || row.every(cell => cell === undefined || cell === null || cell === '')) continue
+          const item = {}
+          targetFields.forEach(field => {
+            const idx = colMap[field]
+            let value = idx !== undefined ? row[idx] : (field.includes('amount') ? null : '')
+            // 金额转数字
+            if (['receive_amount','pay_amount','in_amount','out_amount'].includes(field)) {
+              value = value ? Number(value) : null
+            }
+            // 日期格式化
+            if (['entry_time','exit_time','receive_time','pay_time','in_time','out_time'].includes(field)) {
+              if (value) {
+                value = value instanceof Date ? dayjs(value).format('YYYY-MM-DD') : value
+              }
+            }
+            item[field] = value
+          })
+          processedData.push(item)
+        }
+
         if (processedData.length === 0) {
           ElMessage.warning('Excel文件中没有数据')
           return
         }
+        console.log(processedData)
 
-        // 调用批量创建API
+        // 4. 批量上传
         const res = await batchCreateProperty(processedData)
         if (res.success) {
           ElMessage.success('数据导入成功')
-          // 刷新表格数据
           getPropertyListAsync()
         } else {
           ElMessage.error(res.message || '数据导入失败')
@@ -658,15 +668,12 @@ const handleFileChange = (file) => {
         ElMessage.error('处理Excel文件失败')
       }
     }
-    
-    // 开始读取文件
     reader.readAsArrayBuffer(file.raw)
   } catch (error) {
     console.error('文件上传失败：', error)
     ElMessage.error('文件上传失败')
   }
 }
-
 
 
 </script>
