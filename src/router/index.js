@@ -44,14 +44,15 @@ const systemManagementRoutes = [
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard'
+    redirect: '/login',
   },
   {
     path: '/login',
     name: 'login',
     component: () => import('@/views/login/index.vue'),
     meta: {
-      requiresAuth: false
+      requiresAuth: false,
+      title: '登录'
     }
   },
   {
@@ -59,7 +60,8 @@ const routes = [
     name: 'dashboard',
     component: () => import('@/views/dashboard/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "首页"
     }
   },
   {
@@ -67,7 +69,8 @@ const routes = [
     name: 'system-management',
     component: () => import('@/views/system-management/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "系统管理"
     },
     children: systemManagementRoutes
   },
@@ -76,7 +79,8 @@ const routes = [
     name: 'ai-help',
     component: () => import('@/views/ai-help/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: 'ai辅助'
     }
   },
   {
@@ -116,7 +120,8 @@ const routes = [
     name: 'check-cases',
     component: () => import('@/views/check-cases/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "检查办案"
     }
   },
   {
@@ -124,7 +129,8 @@ const routes = [
     name: 'legal-search',
     component: () => import('@/views/legal-search/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "法律检索"
     }
   },
   {
@@ -132,7 +138,8 @@ const routes = [
     name: 'business-management',
     component: () => import('@/views/business-management/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "案件管理"
     }
   },
   {
@@ -140,7 +147,8 @@ const routes = [
     name: 'case-card',
     component: () => import('@/views/business-management/case-card.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "案件管理"
     }
   },
   {
@@ -148,7 +156,8 @@ const routes = [
     name: 'property-management',
     component: () => import('@/views/business-management/property-management.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "案件管理"
     }
   },
 
@@ -157,7 +166,8 @@ const routes = [
     name: 'ppt-page',
     component: () => import('@/views/featured-brands/index.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+
     }
   },
   {
@@ -173,7 +183,8 @@ const routes = [
     name: 'statistical-chart',
     component: () => import('@/views/business-management/statistical-chart.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "案件管理"
     }
 
   },
@@ -182,7 +193,8 @@ const routes = [
     name: 'table-management',
     component: () => import('@/views/business-management/table-management.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      title: "案件管理"
     }
 
   },
