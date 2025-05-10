@@ -8,7 +8,7 @@
     >
       <img
         class="cover-img"
-        :src="`http://localhost:8000'${item.cover_image}`"
+        :src="`${econfig.baseUrl}${item.cover_image}`"
         alt=""
       />
     </div>
@@ -16,6 +16,7 @@
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
+import econfig from '@/server/develop'
 
 // 使用 defineProps 接收父组件传递的数据
 const props = defineProps({

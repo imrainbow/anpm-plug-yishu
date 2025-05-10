@@ -26,17 +26,13 @@
 
     <template v-if="!fullScreen">
       <div v-for="item in imgUrlList" :key="item">
-        <img
-          class="ppt-item-img"
-          :src="`http://localhost:8000/${item}`"
-          alt=""
-        />
+        <img class="ppt-item-img" :src="`${econfig.baseUrl}${item}`" alt="" />
       </div>
     </template>
     <template style="width: 100%" v-else>
       <img
         class="ppt-item-img-full"
-        :src="`http://localhost:8000/${activeUrl}`"
+        :src="`${econfig.baseUrl}${activeUrl}`"
         @click="handleImgClick"
         alt=""
         style="width: 100%"
@@ -50,6 +46,7 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 import { previewPPT } from '@/api/ppt-page'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+import econfig from '@/server/develop'
 
 const route = useRoute()
 const pptPage = ref(null)
