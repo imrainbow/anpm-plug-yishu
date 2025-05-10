@@ -1,26 +1,16 @@
 <template>
-  <div class="ai-help-content">
-    <div id="ai-assist" class="content-section">
-      <div class="card-body" style="margin: unset">
-        <div class="module-grid">
-          <div
-            @click="handleClick(item.id)"
-            class="module-card"
-            v-for="item in props.files"
-            :key="item.id"
-            style="
-              background: rgba(73, 147, 251, 0.1);
-              box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
-            "
-          >
-            <img
-              class="cover-img"
-              :src="`http://localhost:8000'${item.cover_image}`"
-              alt=""
-            />
-          </div>
-        </div>
-      </div>
+  <div class="ppt-card-container">
+    <div
+      @click="handleClick(item.id)"
+      class="page-bottom-card"
+      v-for="item in props.files"
+      :key="item.id"
+    >
+      <img
+        class="cover-img"
+        :src="`http://localhost:8000'${item.cover_image}`"
+        alt=""
+      />
     </div>
   </div>
 </template>
@@ -46,28 +36,16 @@ const handleClick = (id) => {
 
 
 <style lang="less" scoped>
-.ai-help-content {
-  width: 100%;
-}
-.module-card {
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 20px;
-  font-weight: bold;
-  &:hover {
-    cursor: pointer;
-    color: #61d3ff;
-  }
-}
-.card-body {
-  background-color: unset;
-  box-shadow: unset;
-}
-.cover-img {
+.ppt-card-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  .page-bottom-card {
+    margin-right: 5%;
+  }
+  .page-bottom-card:nth-child(3n) {
+    margin-right: 0;
+  }
 }
 </style>

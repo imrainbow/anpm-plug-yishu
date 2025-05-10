@@ -1,15 +1,40 @@
 <template>
-  <div class="ai-help-container help-container ppt-page">
-    <el-tooltip class="box-item" content="返回" placement="left">
-      <img
-        class="return-img"
-        src="@/assets/return-circle.png"
-        alt=""
-        @click="handleReturn"
-      />
-    </el-tooltip>
-    <div class="box-container" v-if="secondMenu.length <= 1">
-      <div class="ppt-card-container">
+  <div class="box-container">
+    <PageTitle>{{ menuTitle }}</PageTitle>
+    <div class="page-bottom" style="padding: 3%" v-if="secondMenu.length <= 1">
+      <PptCard v-if="filesList.length > 0" :files="filesList" />
+      <div class="pagination-ppt-container" v-if="total > 10">
+        <el-pagination
+          v-model:current-page="queryData.page"
+          v-model:page-size="queryData.pageSize"
+          :page-sizes="[10, 20, 50, 100, 200]"
+          :size="size"
+          :disabled="disabled"
+          :background="background"
+          layout="prev, pager, next"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+      <div class="no-data-container" v-if="filesList.length == 0">
+        <NoData />
+      </div>
+    </div>
+    <!-- 有2个以上二级标题 -->
+    <div class="page-bottom-box" v-else>
+      <div id="page-bottom" class="page-bottom" v-if="secondType == 1">
+        <div
+          @click="handleClick(item.id)"
+          class="page-bottom-card"
+          v-for="item in secondMenu"
+          :key="item.id"
+          :style="{ fontSize: `${33 * sizeRatio}px` }"
+        >
+          {{ item.name }}
+        </div>
+      </div>
+      <div class="page-bottom" style="padding: 3%" v-else>
         <PptCard v-if="filesList.length > 0" :files="filesList" />
         <div class="pagination-ppt-container" v-if="total > 10">
           <el-pagination
@@ -25,52 +50,9 @@
             @current-change="handleCurrentChange"
           />
         </div>
+
         <div class="no-data-container" v-if="filesList.length == 0">
           <NoData />
-        </div>
-      </div>
-    </div>
-    <!-- 有2个以上二级标题 -->
-    <div class="box-container" v-else>
-      <div class="ai-help-content">
-        <div id="ai-assist" class="content-section" v-if="secondType == 1">
-          <div class="card-body" style="margin: unset">
-            <div class="module-grid">
-              <div
-                @click="handleClick(item.id)"
-                class="module-card"
-                v-for="item in secondMenu"
-                :key="item.id"
-                style="
-                  background: rgba(73, 147, 251, 0.1);
-                  box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
-                "
-              >
-                {{ item.name }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ppt-card-container" v-else>
-          <PptCard v-if="filesList.length > 0" :files="filesList" />
-          <div class="pagination-ppt-container" v-if="total > 10">
-            <el-pagination
-              v-model:current-page="queryData.page"
-              v-model:page-size="queryData.pageSize"
-              :page-sizes="[10, 20, 50, 100, 200]"
-              :size="size"
-              :disabled="disabled"
-              :background="background"
-              layout="prev, pager, next"
-              :total="total"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-            />
-          </div>
-
-          <div class="no-data-container" v-if="filesList.length == 0">
-            <NoData />
-          </div>
         </div>
       </div>
     </div>
@@ -91,6 +73,7 @@ const PptCard = defineAsyncComponent(() =>
 const NoData = defineAsyncComponent(() => 
   import('@/components/NoData.vue')
 )
+import PageTitle from '@/components/PageTitle.vue';
 const secondType = ref(1)
 const router = useRouter();
 const route = useRoute()
@@ -98,6 +81,10 @@ const menuTitle = ref('')
 onMounted(() => {
   menuTitle.value = route.query.id
 
+})
+const sizeRatio = ref(1)
+onMounted(() => {
+  sizeRatio.value = window.innerWidth / 1920
 })
 
 const queryData = ref({
@@ -182,32 +169,4 @@ const handleClick = (id) => {
 </script>
 
 <style lang="less" scoped>
-.ppt-page {
-  padding: 20px;
-  min-height: 100vh;
-  background-color: rgba(0, 53, 127, 0.9);
-}
-.ai-help-container {
-  height: unset !important;
-}
-.module-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #61d3ff;
-  font-size: 20px;
-  font-weight: bold;
-  &:hover {
-    cursor: pointer;
-
-    color: #fff;
-  }
-}
-.box-container {
-  margin-top: 60px;
-}
-.card-body {
-  background-color: unset;
-  box-shadow: unset;
-}
 </style>
