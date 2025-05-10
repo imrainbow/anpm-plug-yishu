@@ -115,24 +115,7 @@ const routes = [
       requiresAuth: true
     }
   },
-  {
-    path: '/check-cases',
-    name: 'check-cases',
-    component: () => import('@/views/check-cases/index.vue'),
-    meta: {
-      requiresAuth: true,
-      title: "检查办案"
-    }
-  },
-  {
-    path: '/legal-search',
-    name: 'legal-search',
-    component: () => import('@/views/legal-search/index.vue'),
-    meta: {
-      requiresAuth: true,
-      title: "法律检索"
-    }
-  },
+
   {
     path: '/business-management',
     name: 'business-management',
