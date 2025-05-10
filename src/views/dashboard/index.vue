@@ -54,7 +54,7 @@
 
         <div
           class="panel-itme left-panel-item"
-          @click="gotoDetail('/legal-search')"
+          @click="handleItemClick('https://law.wkinfo.com.cn/')"
         >
           <img
             class="panel-itme-img"
@@ -69,7 +69,7 @@
       <div class="middle-panel">
         <div
           class="panel-itme middle-panel-item"
-          @click="gotoDetail('/check-cases')"
+          @click="handleItemClick('http://59.203.180.37:8990/digital-yx/login')"
         >
           <img
             class="panel-itme-img"
@@ -158,6 +158,10 @@ const handleLogout = () => {
   store.commit('user/DELETE_USER')
   router.push("/login");
 
+
+};
+const handleItemClick = (url) => {
+  window.open(url, '_blank');
 };
 const handleAIHelp = () => {
   router.push("/ai-help");
