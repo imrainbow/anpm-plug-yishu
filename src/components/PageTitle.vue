@@ -2,7 +2,7 @@ vue
 <template>
   <div
     class="page-header-common"
-    :style="{ height: 80 * sizeRatio + 'px', fontSize: 24 * sizeRatio + 'px' }"
+    :style="{ height: 80 * sizeRatio + 'px', fontSize: 33 * sizeRatio + 'px' }"
   >
     <slot></slot>
   </div>
@@ -44,7 +44,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #61d3ff;
 
   font-weight: bold;
 }

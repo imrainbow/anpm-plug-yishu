@@ -1,23 +1,17 @@
 <template>
-  <div class="ai-container">
-    <!-- 返回按钮 -->
-    <el-tooltip class="box-item" content="返回" placement="left">
-      <img
-        class="return-img"
-        src="@/assets/return-circle.png"
-        alt=""
-        @click="handleReturn"
-      />
-    </el-tooltip>
-    <div class="flex-container">
-      <div
-        class="card"
-        v-for="item in aiTools"
-        :key="item.name"
-        @click="handleCardClick(item)"
-      >
-        <div class="card-content">
-          {{ item.name }}
+  <div class="box-container">
+    <PageTitle> AI辅助</PageTitle>
+    <div class="ai-container">
+      <div class="flex-container">
+        <div
+          class="card"
+          v-for="item in aiTools"
+          :key="item.name"
+          @click="handleCardClick(item)"
+        >
+          <div class="card-content">
+            {{ item.name }}
+          </div>
         </div>
       </div>
     </div>
@@ -26,6 +20,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import PageTitle from '@/components/PageTitle.vue';
 
 const router = useRouter();
 
@@ -62,8 +57,8 @@ const handleReturn = () => {
   }
 }
 .ai-container {
-  height: 100vh;
-  background-color: rgba(0, 53, 127, 0.9);
+  flex: 1;
+
   padding: 40px 80px; // 增加左右内边距
   box-sizing: border-box;
   display: flex;
@@ -79,31 +74,41 @@ const handleReturn = () => {
 
 .card {
   flex: 0 0 calc(33.333% - 27px); // 调整宽度计算以适应新的间距
-  background-color: rgb(0, 53, 127);
-  color: #61d3ff;
-  // padding: 40px;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 16px;
-  height: 90px;
+  position: relative;
+  border-radius: 12px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  // box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
+  cursor: pointer;
+  color: #61d3ff;
+  font-size: 22px;
+  font-weight: bold;
+  background: rgba(73, 147, 251, 0.1);
+  box-shadow: inset 0px 0px 40px 0px rgba(108, 200, 255, 0.5);
+  border: 1px solid rgba(97, 211, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  overflow: hidden;
+
+  .card-text {
+    position: relative;
+    z-index: 2;
+  }
 
   &:hover {
-    transform: scale(1.1);
-    transition: all 0.3s ease;
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(0, 150, 255, 0.3);
     color: #fff;
-    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    // background-color: #40a9ff;
+    border-color: rgba(97, 211, 255, 0.6);
+
+    &::after {
+      transform: rotate(30deg) translate(10%, 10%);
+    }
   }
 
   &:active {
-    transform: translateY(0);
-    // background-color: #096dd9;
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 5px 15px rgba(0, 150, 255, 0.2);
   }
 }
 .card-content {
