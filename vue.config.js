@@ -1,10 +1,12 @@
 const { defineConfig } = require('@vue/cli-service')
+import econfig from './src/server/develop'
+
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://129.211.213.154:8000',
+        target: econfig.baseUrl,
         // target: 'http://localhost:8000',
         changeOrigin: true,
         pathRewrite: {
