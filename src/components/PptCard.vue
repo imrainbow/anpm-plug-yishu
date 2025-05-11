@@ -44,6 +44,10 @@ const handleClick = (id) => {
   flex-wrap: wrap;
   .page-bottom-card {
     margin-right: 5%;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   .page-bottom-card:nth-child(3n) {
     margin-right: 0;

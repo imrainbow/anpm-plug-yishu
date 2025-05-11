@@ -1,6 +1,10 @@
 <template>
-  <div :class="fullScreen ? 'full-page' : 'ppt-page'">
-    <div class="fixed-box" v-if="!fullScreen">
+  <div
+    :class="fullScreen ? 'full-page' : 'ppt-page'"
+    v-loading="loading"
+    element-loading-text="加载中..."
+  >
+    <div class="fixed-box">
       <el-tooltip class="box-item" content="返回" placement="left">
         <img
           class="btn-fixed"
@@ -16,9 +20,24 @@
         placement="left"
       >
         <img
+          v-if="!fullScreen"
           class="btn-fixed"
           src="@/assets/full-screen.png"
-          @click="fullScreen = !fullScreen"
+          @click="fullScreenClick"
+          alt=""
+        />
+      </el-tooltip>
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="结束播放"
+        placement="left"
+      >
+        <img
+          v-if="fullScreen"
+          class="btn-fixed"
+          src="@/assets/stop.png"
+          @click="fullScreen = false"
           alt=""
         />
       </el-tooltip>
@@ -60,6 +79,7 @@ const router = useRouter()
 const handleReturn = () => {
   router.back()
 }
+const loading = ref(false)
 
 // 获取ppt预览信息
 const previewPPTAsync = async () => {
@@ -67,11 +87,12 @@ const previewPPTAsync = async () => {
   console.log(res)
   if(res.success) {
      imgUrlList.value = res.data.image_urls
-     activeUrl.value = imgUrlList.value[0]
+    //  activeUrl.value = imgUrlList.value[0]/
 
   }else {
     ElMessage.error(res.message)
   }
+  loading.value = false
  
  
 }
@@ -88,11 +109,17 @@ const handleImgClick = (url) => {
   
 
 }
+const fullScreenClick = () => {
+  activeUrl.value = imgUrlList.value[0]
+
+  fullScreen.value = !fullScreen.value
+}
 
 onBeforeMount(() => {
   pptId.value = route.query.id
 })
 onMounted(() => {
+  loading.value = true
   previewPPTAsync()
 })
 

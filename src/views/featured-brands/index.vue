@@ -1,9 +1,13 @@
 <template>
-  <div class="box-container">
+  <div
+    class="box-container"
+    v-loading="getFilesLoading"
+    element-loading-text="加载中..."
+  >
     <PageTitle>{{ menuTitle }}</PageTitle>
     <div class="page-bottom" style="padding: 3%" v-if="secondMenu.length <= 1">
       <PptCard v-if="filesList.length > 0" :files="filesList" />
-      <div class="pagination-ppt-container" v-if="total > 10">
+      <div class="pagination-ppt-container" v-if="total > 6">
         <el-pagination
           v-model:current-page="queryData.page"
           v-model:page-size="queryData.pageSize"
@@ -36,7 +40,7 @@
       </div>
       <div class="page-bottom" style="padding: 3%" v-else>
         <PptCard v-if="filesList.length > 0" :files="filesList" />
-        <div class="pagination-ppt-container" v-if="total > 10">
+        <div class="pagination-ppt-container" v-if="total > 6">
           <el-pagination
             v-model:current-page="queryData.page"
             v-model:page-size="queryData.pageSize"
@@ -66,6 +70,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { getFilesByMenuID } from '@/api/ppt-page';
 import { getPptMenuList } from '@/api/ppt-menu';
 
+
 // 使用异步组件
 const PptCard = defineAsyncComponent(() => 
   import('@/components/PptCard.vue')
@@ -73,12 +78,15 @@ const PptCard = defineAsyncComponent(() =>
 const NoData = defineAsyncComponent(() => 
   import('@/components/NoData.vue')
 )
+
 import PageTitle from '@/components/PageTitle.vue';
 const secondType = ref(1)
 const router = useRouter();
 const route = useRoute()
 const menuTitle = ref('')
+const getFilesLoading = ref(false)
 onMounted(() => {
+  getFilesLoading.value = true
   menuTitle.value = route.query.id
 
 })
@@ -90,7 +98,7 @@ onMounted(() => {
 const queryData = ref({
   menu_id: 9,
   page: 1,
-  page_size: 10
+  page_size: 6
 })
 const total = ref(0);
 const pptMenuList = ref([]);
@@ -99,6 +107,7 @@ const getPptMenuListAsync = async () => {
   pptMenuList.value = res.data;
  queryData.value.menu_id = pptMenuList.value.find(item => item.name == menuTitle.value).id;
   handleSecondMenu();
+  getFilesLoading.value = false
 }
 const activeId = ref(9);
 
