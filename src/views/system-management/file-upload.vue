@@ -85,7 +85,9 @@
               <el-button type="primary">选择文件</el-button>
             </template>
             <template #tip>
-              <div class="el-upload__tip">只能上传 PPT 文件，且不超过 50MB</div>
+              <div class="el-upload__tip">
+                只能上传 PPT 文件，且不超过 200MB
+              </div>
             </template>
           </el-upload>
         </el-form-item>
@@ -287,14 +289,14 @@ const beforeUpload = (file) => {
 
   const isPPT = file.type === 'application/vnd.ms-powerpoint' || 
                 file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-  const isLt50M = file.size / 1024 / 1024 < 50
+  const isLt50M = file.size / 1024 / 1024 < 200
 
   if (!isPPT) {
     ElMessage.error('只能上传 PPT 文件!')
     return false
   }
   if (!isLt50M) {
-    ElMessage.error('文件大小不能超过 50MB!')
+    ElMessage.error('文件大小不能超过 200MB!')
     return false
   }
   return true

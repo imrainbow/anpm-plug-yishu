@@ -13,12 +13,13 @@ vue
       src="@/assets/return-circle.png"
       alt=""
       @click="handleReturn"
+      :style="{ height: 25 * sizeRatio + 'px', top: 6 * sizeRatio + 'px' }"
     />
   </el-tooltip>
 </template>
 
 <script setup>
-import { onMounted,ref} from 'vue';
+import { onMounted,ref,onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const handleReturn = () => {
@@ -26,9 +27,29 @@ const handleReturn = () => {
 };
 
 const sizeRatio = ref(1)
+
+// 计算尺寸比例的函数
+const calculateSizeRatio = () => {
+  sizeRatio.value = window.innerWidth / 1920;
+};
+
+// 添加窗口大小变化的事件监听器
+const handleResize = () => {
+  calculateSizeRatio();
+};
+
 onMounted(() => {
-  sizeRatio.value = window.innerWidth / 1920
-})
+  // 初始计算
+  calculateSizeRatio();
+  
+  // 添加窗口大小变化的事件监听器
+  window.addEventListener('resize', handleResize);
+});
+
+// 组件卸载时移除事件监听器
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
 
 
 
@@ -50,11 +71,11 @@ onMounted(() => {
 }
 .return-img {
   position: fixed;
-  top: 5px;
+  // top: 5px;
   right: 30px;
   cursor: pointer;
   z-index: 1000;
-  height: 30px;
+  // height: 30px;
   &:hover {
     transform: scale(1.1);
   }

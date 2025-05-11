@@ -8,9 +8,11 @@
     >
       <img
         class="cover-img"
+        v-if="item.cover_image && item.cover_image !== ''"
         :src="`${econfig.baseUrl}${item.cover_image}`"
         alt=""
       />
+      <div class="card-title" v-else>等待解析中请稍后。。。</div>
     </div>
   </div>
 </template>
@@ -28,6 +30,10 @@ const props = defineProps({
 })
 const router = useRouter();
 const handleClick = (id) => {
+  if(!props.files.find(item => item.id === id).cover_image || props.files.find(item => item.id === id).cover_image === '') {
+    ElMessage.warning('该ppt正在解析中，请稍后')
+    return
+  }
   router.push({
     path: '/ppt-page-detail',
     query: { id }
