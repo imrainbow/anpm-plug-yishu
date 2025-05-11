@@ -4,7 +4,7 @@
     v-loading="getFilesLoading"
     element-loading-text="加载中..."
   >
-    <PageTitle>{{ menuTitle }}</PageTitle>
+    <PageTitle>{{ pageTitleText }}</PageTitle>
     <div class="page-bottom" style="padding: 3%" v-if="secondMenu.length <= 1">
       <PptCard v-if="filesList.length > 0" :files="filesList" />
       <div class="pagination-ppt-container" v-if="total > 6">
@@ -84,6 +84,7 @@ const secondType = ref(1)
 const router = useRouter();
 const route = useRoute()
 const menuTitle = ref('')
+const pageTitleText = ref('')
 const getFilesLoading = ref(false)
 onMounted(() => {
   getFilesLoading.value = true
@@ -125,9 +126,13 @@ const handleSecondMenu = () => {
     activeId.value = secondMenu.value[0].id;
     queryData.value.menu_id = activeId.value;
     console.log(secondMenu.value, 'secondMenu');
+   
+
   }else {
     menuTitle.value = menuObj.name;
   }
+  
+   pageTitleText.value = menuObj.name;
 }
 const filesList = ref([]);
 const getFilesByMenuIDAsync = async () => {
@@ -173,6 +178,8 @@ const handleReturn = () => {
 const handleClick = (id) => {
   secondType.value = 2;
   queryData.value.menu_id = id;
+  debugger
+  pageTitleText.value = secondMenu.value.find(item => item.id == id).name;
   getFilesByMenuIDAsync();
 }
 </script>

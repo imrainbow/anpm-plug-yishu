@@ -12,7 +12,13 @@
         :src="`${econfig.baseUrl}${item.cover_image}`"
         alt=""
       />
-      <div class="card-title" v-else>等待解析中请稍后。。。</div>
+      <div
+        class=""
+        :style="{ fontSize: `${28 * sizeRatio}px`, color: '#fff' }"
+        v-else
+      >
+        等待解析中请稍后刷新再试！
+      </div>
     </div>
   </div>
 </template>
