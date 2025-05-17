@@ -52,7 +52,7 @@
       <img
         class="ppt-item-img-full"
         :src="`${econfig.baseUrl}${activeUrl}`"
-        @click="handleImgClick"
+        @click.self="handleImgClick"
         alt=""
         style="width: 100%"
       />
@@ -68,12 +68,11 @@ import { useRoute, useRouter } from 'vue-router'
 import econfig from '@/server/develop'
 
 const route = useRoute()
-const pptPage = ref(null)
-const pptPageData = ref(null)
+
 const pptId = ref(null)
 const imgUrlList = ref([])
 const activeUrl = ref(null)
-const fullScreen = ref(false)
+const fullScreen = ref(true)
 const currentIndex = ref(0)
 const router = useRouter()
 const handleReturn = () => {
@@ -87,7 +86,7 @@ const previewPPTAsync = async () => {
   console.log(res)
   if(res.success) {
      imgUrlList.value = res.data.image_urls
-    //  activeUrl.value = imgUrlList.value[0]/
+     activeUrl.value = imgUrlList.value[0]
 
   }else {
     ElMessage.error(res.message)
