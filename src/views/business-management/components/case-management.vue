@@ -225,6 +225,10 @@
       @closed="handleResetForm"
     >
       <el-form :model="form" ref="formRef" :rules="rules" label-width="120px">
+        <div class="title">
+          <div class="title-text">案管部门</div>
+          <div class="title-line"></div>
+        </div>
         <el-form-item label="案件名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入案件名称" />
         </el-form-item>
@@ -316,6 +320,10 @@
             :rows="3"
           />
         </el-form-item>
+        <div class="title">
+          <div class="title-text">财务部门</div>
+          <div class="title-line"></div>
+        </div>
         <el-form-item label="入库日期">
           <el-date-picker
             style="width: 100%"
@@ -802,5 +810,21 @@ const handleCurrentChange = (pageNo) => {
   padding-bottom: 0;
   display: flex;
   justify-content: end;
+}
+.title {
+  color: #1a3873;
+  font-weight: 600;
+  width: 100%;
+  display: flex;
+  .title-text {
+    width: 60px;
+  }
+  .title-line {
+    height: 1px;
+
+    background-color: #1a3873;
+    margin-top: 10px;
+    width: calc(100% - 60px);
+  }
 }
 </style>
