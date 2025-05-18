@@ -141,7 +141,9 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button type="primary" @click="handleSave">确定</el-button>
+          <el-button type="primary" class="margin-right-10" @click="handleSave"
+            >确定</el-button
+          >
           <el-button class="btn-cancel" @click="dialogVisible = false"
             >取消</el-button
           >

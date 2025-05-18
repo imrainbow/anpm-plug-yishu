@@ -6,7 +6,12 @@
   >
     <PageTitle>{{ pageTitleText }}</PageTitle>
     <div class="page-bottom" style="padding: 3%" v-if="secondMenu.length <= 1">
-      <PptCard v-if="filesList.length > 0" :files="filesList" />
+      <PptCard
+        v-if="filesList.length > 0"
+        :files="filesList"
+        :page="queryData.page"
+        @update-files="getFilesByMenuIDAsync"
+      />
       <div class="pagination-ppt-container" v-if="total > 6">
         <el-pagination
           v-model:current-page="queryData.page"
@@ -39,7 +44,12 @@
         </div>
       </div>
       <div class="page-bottom" style="padding: 3%" v-else>
-        <PptCard v-if="filesList.length > 0" :files="filesList" />
+        <PptCard
+          v-if="filesList.length > 0"
+          :files="filesList"
+          :page="queryData.page"
+          @update-files="getFilesByMenuIDAsync"
+        />
         <div class="pagination-ppt-container" v-if="total > 6">
           <el-pagination
             v-model:current-page="queryData.page"

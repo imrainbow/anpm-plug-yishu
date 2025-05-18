@@ -95,6 +95,7 @@
       <template #footer>
         <el-button
           type="primary"
+          class="margin-right-10"
           @click="handleSubmit"
           :loading="submitLoading"
         >

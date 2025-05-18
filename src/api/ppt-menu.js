@@ -13,3 +13,6 @@ export const updatePptMenu = (id, data) => request.put(`/api/menus/${id}`, data)
 // 删除PPT菜单
 export const deletePptMenu = (id) => request.delete(`/api/menus/${id}`)
 
+// ppt列表排序
+export const swapSort = (data) => request.post('/api/files/swap-sort', data)
+

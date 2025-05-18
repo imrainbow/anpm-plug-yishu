@@ -3,7 +3,7 @@
     <div
       @click="handleClick(item.id)"
       class="page-bottom-card"
-      v-for="item in props.files"
+      v-for="(item, index) in props.files"
       :key="item.id"
       @mouseenter="hoveredItemId = item.id"
       @mouseleave="checkLeave($event, item.id)"
@@ -11,12 +11,14 @@
       <div class="sort-box" v-if="hoveredItemId === item.id">
         <img
           src="@/assets/arrow-left1.png"
-          @click="handleSortClick(1)"
+          @click.stop="handleSortClick(1, index)"
+          v-if="!(props.page === 1 && index === 0)"
           alt=""
         />
         <img
           src="@/assets/arrow-right1.png"
-          @click="handleSortClick(2)"
+          @click.stop="handleSortClick(2, index)"
+          v-if="index !== props.files.length - 1"
           alt=""
         />
       </div>
@@ -39,8 +41,12 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import econfig from '@/server/develop'
+import {swapSort} from '@/api/ppt-menu.js'
+import { ElMessage } from 'element-plus';
 
 import { ref } from 'vue'
+// 定义要发出的事件
+const emit = defineEmits(['update-files'])
 
 // 使用 defineProps 接收父组件传递的数据
 const props = defineProps({
@@ -48,6 +54,11 @@ const props = defineProps({
     type: Array,
     required: true,
     default: () => []
+  },
+  page: {
+    type: Number,
+    required: true,
+    default: 1
   }
 })
 const router = useRouter();
@@ -73,7 +84,37 @@ const checkLeave = (event, id) => {
     }
   }, 50);
 }
-const handleSortClick = (type) => {
+const swapSortAsync = async (data) => {
+  const res = await swapSort(data)
+  if(res.success) {
+    ElMessage.success('排序成功')
+    // 刷新文件列表
+    // getFilesByMenuIDAsync()
+     // 通知父组件更新文件列表
+    emit('update-files')
+    
+  }else {
+    ElMessage.error(res.message)
+  }
+}
+const handleSortClick = (type,index) => {
+  debugger
+  let obj = {
+    file_id1: null,
+    file_id2: null
+  }
+  if(type == 1) {
+    // 左移
+    obj.file_id1 = props.files[index].id
+    obj.file_id2 = props.files[index - 1].id
+  }else {
+    obj = {
+    file_id1: props.files[index].id,
+    file_id2: props.files[index + 1].id
+  }
+    
+  }
+  swapSortAsync(obj)
   
 }
 

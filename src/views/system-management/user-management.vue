@@ -85,7 +85,9 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="handleAddOk">确定</el-button>
+        <el-button type="primary" class="margin-right-10" @click="handleAddOk"
+          >确定</el-button
+        >
         <el-button class="btn-cancel" @click="dialogVisible = false"
           >取消</el-button
         >
@@ -115,7 +117,9 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="handleEditOk">确定</el-button>
+        <el-button type="primary" class="margin-right-10" @click="handleEditOk"
+          >确定</el-button
+        >
         <el-button class="btn-cancel" @click="dialogVisibleEdit = false"
           >取消</el-button
         >
