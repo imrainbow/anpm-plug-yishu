@@ -1,9 +1,9 @@
 <template>
-  <div class="case-management page-container" style="padding: 0">
+  <div class="case-management" style="padding: 0">
     <!-- 顶部 -->
-    <div class="case-management-header page-header">
+    <div class="case-management-header">
       <div class="header-right">
-        <el-button
+        <!-- <el-button
           type="primary"
           :icon="Download"
           @click="handleDownloadTemplate"
@@ -20,24 +20,74 @@
           accept=".xlsx,.xls"
         >
           <el-button type="primary" :icon="Upload"> 上传Excel </el-button>
-        </el-upload>
-        <el-button type="primary" :icon="Plus" @click="dialogVisible = true"
+        </el-upload> -->
+        <el-button
+          type="primary margin-right-10"
+          :icon="Plus"
+          @click="dialogVisible = true"
           >新增</el-button
         >
-
-        <img src="@/assets/return.png" @click="handleReturn" alt="返回" />
+        <el-button
+          type="primary margin-right-10"
+          :icon="Back"
+          @click="handleReturn"
+          >返回</el-button
+        >
+        <!-- <img src="@/assets/return.png" @click="handleReturn" alt="返回" /> -->
+        <el-dropdown placement="bottom">
+          <el-button plain
+            >更多<el-icon class="el-icon--right"><arrow-down /></el-icon
+          ></el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="handleBatchDelete"
+                ><el-icon><Delete /></el-icon>批量删除</el-dropdown-item
+              >
+              <el-dropdown-item @click="handleDownloadTemplate"
+                ><el-icon><Download /></el-icon>下载模板</el-dropdown-item
+              >
+              <el-dropdown-item>
+                <el-upload
+                  class="upload-excel"
+                  action="#"
+                  :auto-upload="false"
+                  :show-file-list="false"
+                  :on-change="handleFileChange"
+                  accept=".xlsx,.xls"
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      width: 100%;
+                      padding: 5px 0;
+                    "
+                  >
+                    <el-icon><Upload /></el-icon>
+                    <span style="margin-left: 5px">上传Excel</span>
+                  </div>
+                </el-upload>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
     <!-- 表格 -->
 
     <div class="case-management-table">
-      <el-table :data="tableData" border height="calc(100vh - 280px)">
+      <el-table
+        :data="tableData"
+        border
+        @selection-change="handleSelectionChange"
+      >
         <template #empty>
           <div class="empty-table">
             <img class="empty-img" src="@/assets/no-data.png" alt="" />
             <div class="empty-text">暂无数据</div>
           </div>
         </template>
+        <el-table-column type="selection" fixed="left" width="55" />
         <el-table-column
           prop="name"
           label="案件名称"
@@ -314,13 +364,13 @@
 
 <script setup>
 import { ref , onMounted} from 'vue'
-import { Download, Upload, Plus, Edit, Delete } from '@element-plus/icons-vue'
+import { Download, Upload, Plus, Edit, Delete ,Back} from '@element-plus/icons-vue'
 import * as XLSX from 'xlsx'
 import { utils, writeFile } from 'xlsx'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getPropertyList, createProperty, editProperty, deleteProperty,batchCreateProperty } from '@/api/case-card'
+import { getPropertyList, createProperty, editProperty, deleteProperty,batchCreateProperty ,batchDeleteProperty} from '@/api/case-card'
 
 const router = useRouter()
 const page = ref({
@@ -356,6 +406,7 @@ const tableData = ref([])
 const loading = ref(false)
 const dialogVisible = ref(false)
 const formRef = ref(null)
+const selectedIds = ref([])
 const rules = {
   receive_amount: [
     { type: 'number', message: '请输入数字', trigger: 'blur' }
@@ -422,6 +473,13 @@ const handleSave = async() => {
     console.error('表单提交失败:', error)
     return
   }
+}
+// 添加 handleSelectionChange 函数处理表格的选择变化
+const handleSelectionChange = (selection) => {
+  console.log('handleSelectionChange triggered', selection);
+  // 重置选中ID数组
+  selectedIds.value = selection.map(item => item.id);
+  console.log('Updated selectedIds:', selectedIds.value);
 }
 const createPropertyAsync = async () => {
   try {
@@ -542,6 +600,7 @@ const handleDeleteClick = (row) => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
   })
+
     .then(() => {
       deletePropertyAsync(row.id)
     })
@@ -549,6 +608,40 @@ const handleDeleteClick = (row) => {
       // 用户点击取消或关闭弹窗会进入这里
       console.log('取消')
     })
+}
+const handleBatchDelete = () => {
+  if (selectedIds.value.length === 0) {
+    ElMessage.warning('请至少选择一条数据')
+    return
+  }
+  ElMessageBox.confirm('确定删除选中的数据吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+  })
+    .then(() => {
+      // deletePropertyAsync(selectedIds.value)
+      batchDeletePropertyAsync(selectedIds.value)
+
+    })
+    .catch((e) => {
+      // 用户点击取消或关闭弹窗会进入这里
+      console.log('取消')
+    })
+}
+const batchDeletePropertyAsync = async (ids) => {
+  try {
+    const res = await batchDeleteProperty(ids)
+    if(res.success){
+      ElMessage.success('批量删除成功')
+      // 重置选中ID数组
+      selectedIds.value = []
+      getPropertyListAsync()
+    }else {
+      ElMessage.error(res.message)
+    }
+  } catch (error) {
+    console.error('批量删除失败', error)
+  }
 }
 const handleResetForm = () => {
 
@@ -692,5 +785,12 @@ const handleFileChange = (file) => {
 .case-management-table {
   background-color: #fff;
   padding: 20px;
+}
+.case-management-header {
+  background-color: #fff;
+  padding: 20px;
+  padding-bottom: 0;
+  display: flex;
+  justify-content: end;
 }
 </style>

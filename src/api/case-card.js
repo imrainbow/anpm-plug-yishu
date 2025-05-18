@@ -51,6 +51,9 @@ export const editProperty = (data) => request.put(`/api/case-property/${data.id}
 
 // 删除涉案财物
 export const deleteProperty = (id) => request.delete(`/api/case-property/${id}`)
+// 批量删除涉案财物
+export const batchDeleteProperty = (ids) => request.post('/api/case-property/delete', ids)
+
 
 // 批量创建涉案财物
 export const batchCreateProperty = (data) => request.post('/api/case-property/batch', data)
