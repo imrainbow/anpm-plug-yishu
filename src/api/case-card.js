@@ -19,6 +19,9 @@ export const editCase = (data) => request.put(`/api/cases/${data.id}`, data)
 // 删除案卡
 export const deleteCase = (id) => request.delete(`/api/cases/${id}`)
 
+// 批量删除案卡
+export const batchDeleteCases = (ids) => request.post('/api/cases/delete', ids)
+
 // 获取案卡列表（财务部门）
 export const getCasesList = (params) => request.get('/api/money', { params })
 

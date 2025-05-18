@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import store from './store'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const request = axios.create({
     baseURL: '',
@@ -35,6 +37,11 @@ request.interceptors.response.use(
             }
         } else {
             // 非0状态码，显示错误信息
+            if (msg == "Token鉴权失败") {
+                // 删除用户信息并跳转到登录页
+                store.commit('user/DELETE_USER')
+                router.push('/login')
+            }
             ElMessage.error(msg || '请求失败')
             return Promise.resolve({
                 success: false,

@@ -353,7 +353,9 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="handleSave">确定</el-button>
+        <el-button type="primary" class="margin-right-10" @click="handleSave"
+          >确定</el-button
+        >
         <el-button class="btn-cancel" @click="dialogVisible = false"
           >取消</el-button
         >
@@ -772,7 +774,15 @@ const handleFileChange = (file) => {
     ElMessage.error('文件上传失败')
   }
 }
-
+const handleSizeChange = (size) => {
+  page.value.page = 1
+  page.value.page_size = size
+  getPropertyListAsync()
+}
+const handleCurrentChange = (pageNo) => {
+  page.value.page = pageNo
+  getPropertyListAsync()
+}
 
 </script>
 
