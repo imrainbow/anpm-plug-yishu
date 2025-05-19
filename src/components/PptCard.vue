@@ -59,6 +59,11 @@ const props = defineProps({
     type: Number,
     required: true,
     default: 1
+  },
+  preFileList: {
+    type: Array,
+    required: true,
+    default: () => []
   }
 })
 const router = useRouter();
@@ -104,9 +109,17 @@ const handleSortClick = (type,index) => {
     file_id2: null
   }
   if(type == 1) {
-    // 左移
-    obj.file_id1 = props.files[index].id
+    if(index == 0) {
+      obj.file_id1 = props.files[index].id
+    obj.file_id2 = props.preFileList[props.preFileList.length - 1].id
+      
+
+    }else {
+      obj.file_id1 = props.files[index].id
     obj.file_id2 = props.files[index - 1].id
+    }
+    // 左移
+    
   }else {
     obj = {
     file_id1: props.files[index].id,

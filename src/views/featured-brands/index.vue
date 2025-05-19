@@ -5,17 +5,22 @@
     element-loading-text="加载中..."
   >
     <PageTitle>{{ pageTitleText }}</PageTitle>
-    <div class="page-bottom" style="padding: 3%" v-if="secondMenu.length <= 1">
+    <div
+      class="page-bottom page-no-display"
+      style="padding: 3%"
+      v-if="secondMenu.length <= 1"
+    >
       <PptCard
         v-if="filesList.length > 0"
         :files="filesList"
         :page="queryData.page"
+        :preFileList="preFileList"
         @update-files="getFilesByMenuIDAsync"
       />
       <div class="pagination-ppt-container" v-if="total > 6">
         <el-pagination
           v-model:current-page="queryData.page"
-          v-model:page-size="queryData.pageSize"
+          v-model:page-size="queryData.page_size"
           :page-sizes="[10, 20, 50, 100, 200]"
           :size="size"
           :disabled="disabled"
@@ -43,17 +48,18 @@
           {{ item.name }}
         </div>
       </div>
-      <div class="page-bottom" style="padding: 3%" v-else>
+      <div class="page-bottom page-no-display" style="padding: 3%" v-else>
         <PptCard
           v-if="filesList.length > 0"
           :files="filesList"
           :page="queryData.page"
           @update-files="getFilesByMenuIDAsync"
+          :preFileList="preFileList"
         />
         <div class="pagination-ppt-container" v-if="total > 6">
           <el-pagination
             v-model:current-page="queryData.page"
-            v-model:page-size="queryData.pageSize"
+            v-model:page-size="queryData.page_size"
             :page-sizes="[10, 20, 50, 100, 200]"
             :size="size"
             :disabled="disabled"
@@ -171,20 +177,23 @@ const handleSizeChange = (size) => {
   queryData.value.page_size = size;
   getFilesByMenuIDAsync();
 }
+const preFileList = ref([])
 const handleCurrentChange = (page) => {
   queryData.value.page = page;
+  // 存储上一页数据
+  preFileList.value = JSON.parse(JSON.stringify(filesList.value));
   getFilesByMenuIDAsync();
 }
 
-const handleReturn = () => {
-  if(secondMenu.value.length > 1 && secondType.value == 2) {
-    secondType.value = 1;
-  }else {
-    router.back();
+// const handleReturn = () => {
+//   if(secondMenu.value.length > 1 && secondType.value == 2) {
+//     secondType.value = 1;
+//   }else {
+//     router.back();
 
-  }
+//   }
   
-};
+// };
 const handleClick = (id) => {
   secondType.value = 2;
   queryData.value.menu_id = id;
@@ -195,4 +204,7 @@ const handleClick = (id) => {
 </script>
 
 <style lang="less" scoped>
+.page-no-display {
+  flex-direction: column;
+}
 </style>
