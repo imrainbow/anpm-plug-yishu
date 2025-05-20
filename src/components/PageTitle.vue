@@ -22,9 +22,26 @@ vue
 import { onMounted,ref,onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
-const handleReturn = () => {
+// 节流函数
+const throttle = (fn, delay) => {
+  let lastTime = 0;
+  return function(...args) {
+    const now = Date.now();
+    if (now - lastTime >= delay) {
+      lastTime = now;
+      fn.apply(this, args);
+    }
+  };
+};
+
+// 实际的返回函数
+const handleReturnImpl = () => {
   router.back();
 };
+
+// 使用节流包装返回函数，300毫秒内只能触发一次
+const handleReturn = throttle(handleReturnImpl, 300);
+
 
 const sizeRatio = ref(1)
 
