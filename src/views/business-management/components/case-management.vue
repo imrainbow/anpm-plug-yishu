@@ -68,6 +68,9 @@
                   </div>
                 </el-upload>
               </el-dropdown-item>
+              <el-dropdown-item @click="handleExport"
+                ><el-icon><TopRight /></el-icon>导出数据</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -790,6 +793,109 @@ const handleSizeChange = (size) => {
 const handleCurrentChange = (pageNo) => {
   page.value.page = pageNo
   getPropertyListAsync()
+}
+const handleExport = () => {
+  // 显示加载状态
+  loading.value = true;
+  
+  try {
+    // 1. 准备表头数据
+    const headers = [
+      '案件名称', '涉案物品入库', '入库时间', '涉案物品出库', '出库时间', '物品去向',
+      '涉案款收入金额', '收入日期', '交款人', '涉案款支出金额', '支出日期', '资金去向', '案管备注',
+      '入库日期', '入库金额', '入库来源', '出库日期', '出库金额', '出库去向', '财务备注'
+    ];
+    
+    // 2. 准备表格数据
+    const data = tableData.value.map(row => [
+      row.name || '',
+      row.entry || '',
+      row.entry_time ? dayjs(row.entry_time).format('YYYY-MM-DD') : '',
+      row.exit || '',
+      row.exit_time ? dayjs(row.exit_time).format('YYYY-MM-DD') : '',
+      row.property_to || '',
+      row.receive_amount || '',
+      row.receive_time ? dayjs(row.receive_time).format('YYYY-MM-DD') : '',
+      row.receiver || '',
+      row.pay_amount || '',
+      row.pay_time ? dayjs(row.pay_time).format('YYYY-MM-DD') : '',
+      row.funds_to || '',
+      row.remark || '',
+      row.in_time ? dayjs(row.in_time).format('YYYY-MM-DD') : '',
+      row.in_amount || '',
+      row.in_source || '',
+      row.out_time ? dayjs(row.out_time).format('YYYY-MM-DD') : '',
+      row.out_amount || '',
+      row.out_to || '',
+      row.remarks || ''
+    ]);
+    
+    // 3. 合并表头和数据
+    const exportData = [headers, ...data];
+    
+    // 4. 创建工作簿和工作表
+    const wb = utils.book_new();
+    const ws = utils.aoa_to_sheet(exportData);
+    
+    // 5. 为每列单独设置列宽
+    const colWidths = [
+      { wch: 15 },  // 案件名称
+      { wch: 15 },  // 涉案物品入库
+      { wch: 15 },  // 入库时间
+      { wch: 15 },  // 涉案物品出库
+      { wch: 15 },  // 出库时间
+      { wch: 15 },  // 物品去向
+      { wch: 15 },  // 涉案款收入金额
+      { wch: 15 },  // 收入日期
+      { wch: 15 },  // 交款人
+      { wch: 15 },  // 涉案款支出金额
+      { wch: 15 },  // 支出日期
+      { wch: 15 },  // 资金去向
+      { wch: 15 },  // 案管备注
+      { wch: 15 },  // 入库日期
+      { wch: 15 },  // 入库金额
+      { wch: 15 },  // 入库来源
+      { wch: 15 },  // 出库日期
+      { wch: 15 },  // 出库金额
+      { wch: 15 },  // 出库去向
+      { wch: 15 }   // 财务备注
+    ];
+    ws['!cols'] = colWidths;
+    
+    // 6. 设置表头样式（加粗、居中）
+    const range = utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const cell = ws[utils.encode_cell({ r: 0, c: C })];
+      if (!cell) continue;
+      
+      cell.s = {
+        font: { bold: true },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        fill: { fgColor: { rgb: "EEEEEE" } }
+      };
+    }
+    
+    // 7. 将工作表添加到工作簿
+    utils.book_append_sheet(wb, ws, '涉案财物管理');
+    
+    // 8. 生成文件名（包含当前日期时间）
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+    const fileName = `涉案财物管理_${dateStr}_${timeStr}.xlsx`;
+    
+    // 9. 导出文件
+    writeFile(wb, fileName);
+    
+    // 10. 显示成功消息
+    ElMessage.success('导出成功');
+  } catch (error) {
+    console.error('导出失败:', error);
+    ElMessage.error('导出失败');
+  } finally {
+    // 无论成功失败，都关闭加载状态
+    loading.value = false;
+  }
 }
 
 </script>
