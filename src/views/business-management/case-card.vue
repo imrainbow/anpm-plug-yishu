@@ -3,24 +3,6 @@
     <div class="ai-help-header">
       <div class="header-left">案卡填录</div>
       <div class="header-right">
-        <!-- <el-button
-          type="primary"
-          :icon="Download"
-          @click="handleDownloadTemplate"
-          class="mr-10"
-        >
-          下载模板
-        </el-button>
-        <el-upload
-          class="upload-excel mr-10"
-          action="#"
-          :auto-upload="false"
-          :show-file-list="false"
-          :on-change="handleFileChange"
-          accept=".xlsx,.xls"
-        >
-          <el-button type="primary" :icon="Upload"> 上传Excel </el-button>
-        </el-upload> -->
         <el-button type="primary" :icon="Plus" @click="dialogVisible = true"
           >新增</el-button
         >
@@ -64,6 +46,9 @@
                   </div>
                 </el-upload>
               </el-dropdown-item>
+              <el-dropdown-item @click="handleExport"
+                ><el-icon><TopRight /></el-icon>导出数据</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -465,7 +450,86 @@ const batchDeleteCasesAsync = async (ids) => {
     console.error('批量删除失败', error)
   }
 }
-
+const handleExport = () => {
+  // 显示加载状态
+  loading.value = true;
+  
+  try {
+    // 1. 准备表头数据
+    const headers = [
+      '通报批次', '部门受案号', '案件名称', '嫌疑人姓名', 
+      '承办部门', '承办检察官', '案件类别', '错误明细', '备注'
+    ];
+    
+    // 2. 准备表格数据
+    const data = tableData.value.map(row => [
+      row.batch_no || '',
+      row.department_no || '',
+      row.case_name || '',
+      row.suspect_name || '',
+      row.handling_dept || '',
+      row.prosecutor || '',
+      row.case_type || '',
+      row.error_details || '',
+      row.remarks || ''
+    ]);
+    
+    // 3. 合并表头和数据
+    const exportData = [headers, ...data];
+    
+    // 4. 创建工作簿和工作表
+    const wb = utils.book_new();
+    const ws = utils.aoa_to_sheet(exportData);
+    
+    // 5. 为每列单独设置列宽
+    const colWidths = [
+      { wch: 15 },  // 通报批次
+      { wch: 20 },  // 部门受案号
+      { wch: 30 },  // 案件名称
+      { wch: 15 },  // 嫌疑人姓名
+      { wch: 15 },  // 承办部门
+      { wch: 15 },  // 承办检察官
+      { wch: 15 },  // 案件类别
+      { wch: 40 },  // 错误明细 - 给更多空间
+      { wch: 30 }   // 备注 - 给更多空间
+    ];
+    ws['!cols'] = colWidths;
+    
+    // 6. 设置表头样式（加粗、居中）
+    const range = utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const cell = ws[utils.encode_cell({ r: 0, c: C })];
+      if (!cell) continue;
+      
+      cell.s = {
+        font: { bold: true },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        fill: { fgColor: { rgb: "EEEEEE" } }
+      };
+    }
+    
+    // 7. 将工作表添加到工作簿
+    utils.book_append_sheet(wb, ws, '案卡数据');
+    
+    // 8. 生成文件名（包含当前日期时间）
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+    const fileName = `案卡数据_${dateStr}_${timeStr}.xlsx`;
+    
+    // 9. 导出文件
+    writeFile(wb, fileName);
+    
+    // 10. 显示成功消息
+    ElMessage.success('导出成功');
+  } catch (error) {
+    console.error('导出失败:', error);
+    ElMessage.error('导出失败');
+  } finally {
+    // 无论成功失败，都关闭加载状态
+    loading.value = false;
+  }
+}
 onMounted(() => {
   getCasesList();
 

@@ -21,7 +21,7 @@
         :style="{ fontSize: `${33 * sizeRatio}px` }"
         @click="handleClick('/case-card')"
       >
-        查看表格
+        填录错误汇总
       </div>
 
       <div
@@ -29,7 +29,7 @@
         :style="{ fontSize: `${33 * sizeRatio}px` }"
         @click="handleClick('/statistical-chart')"
       >
-        查看统计分析图
+        统计分析
       </div>
     </div>
   </div>
