@@ -95,18 +95,27 @@ const previewPPTAsync = async () => {
  
  
 }
-const handleImgClick = (url) => {
+const handleImgClick = throttle((url) => {
   currentIndex.value++
   if (currentIndex.value === imgUrlList.value.length) {
     ElMessage.success('ppt播放结束')
     fullScreen.value = false
     currentIndex.value = 0
-
-  }else {
+  } else {
     activeUrl.value = imgUrlList.value[currentIndex.value]
   }
-  
+}, 500) // 500毫秒的节流时间
 
+// 节流函数
+function throttle(fn, delay) {
+  let lastTime = 0
+  return function(...args) {
+    const now = Date.now()
+    if (now - lastTime >= delay) {
+      lastTime = now
+      fn.apply(this, args)
+    }
+  }
 }
 const fullScreenClick = () => {
   activeUrl.value = imgUrlList.value[0]

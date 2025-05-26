@@ -27,6 +27,7 @@
         v-if="item.cover_image && item.cover_image !== ''"
         :src="`${econfig.baseUrl}${item.cover_image}`"
         alt=""
+        loading="lazy"
       />
       <div
         class=""
