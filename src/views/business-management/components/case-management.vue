@@ -3,24 +3,6 @@
     <!-- 顶部 -->
     <div class="case-management-header">
       <div class="header-right">
-        <!-- <el-button
-          type="primary"
-          :icon="Download"
-          @click="handleDownloadTemplate"
-          class="mr-10"
-        >
-          下载模板
-        </el-button>
-        <el-upload
-          class="upload-excel mr-10"
-          action="#"
-          :auto-upload="false"
-          :show-file-list="false"
-          :on-change="handleFileChange"
-          accept=".xlsx,.xls"
-        >
-          <el-button type="primary" :icon="Upload"> 上传Excel </el-button>
-        </el-upload> -->
         <el-button
           type="primary margin-right-10"
           :icon="Plus"
@@ -82,6 +64,7 @@
       <el-table
         :data="tableData"
         border
+        v-loading="loading"
         @selection-change="handleSelectionChange"
       >
         <template #empty>
@@ -96,16 +79,28 @@
           label="案件名称"
           min-width="120"
           fixed="left"
-        />
+        >
+          <template #default="scope">
+            {{ scope.row.name === "" ? "--" : scope.row.name }}
+          </template>
+        </el-table-column>
         <el-table-column label="涉案财物管理（案管部门）" align="center">
-          <el-table-column prop="entry" label="涉案物品入库" min-width="120" />
-          <el-table-column prop="entry_time" label="入库时间" min-width="90">
+          <el-table-column prop="entry" label="涉案物品入库" min-width="120">
+            <template #default="scope">
+              {{ scope.row.entry === "" ? "--" : scope.row.entry }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="entry_time" label="入库时间" min-width="120">
             <template #default="scope">
               {{ formatTimestamp(scope.row.entry_time) }}
             </template>
           </el-table-column>
-          <el-table-column prop="exit" label="涉案物品出库" min-width="120" />
-          <el-table-column prop="exit_time" label="出库时间" min-width="90">
+          <el-table-column prop="exit" label="涉案物品出库" min-width="120">
+            <template #default="scope">
+              {{ scope.row.exit === "" ? "--" : scope.row.exit }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="exit_time" label="出库时间" min-width="120">
             <template #default="scope">
               {{ formatTimestamp(scope.row.exit_time) }}
             </template>
@@ -130,12 +125,16 @@
               {{ formatMoney(scope.row.receive_amount) }}
             </template>
           </el-table-column>
-          <el-table-column prop="receive_time" label="收入日期" min-width="90">
+          <el-table-column prop="receive_time" label="收入日期" min-width="120">
             <template #default="scope">
               {{ formatTimestamp(scope.row.receive_time) }}
             </template>
           </el-table-column>
-          <el-table-column prop="receiver" label="交款人" min-width="90" />
+          <el-table-column prop="receiver" label="交款人" min-width="120">
+            <template #default="scope">
+              {{ scope.row.receiver === "" ? "--" : scope.row.receiver }}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="pay_amount"
             label="涉案款支出金额"
@@ -145,13 +144,21 @@
               {{ formatMoney(scope.row.pay_amount) }}
             </template>
           </el-table-column>
-          <el-table-column prop="pay_time" label="支出日期" min-width="90">
+          <el-table-column prop="pay_time" label="支出日期" min-width="120">
             <template #default="scope">
               {{ formatTimestamp(scope.row.pay_time) }}
             </template>
           </el-table-column>
-          <el-table-column prop="funds_to" label="资金去向" min-width="90" />
-          <el-table-column prop="remark" label="案管备注" min-width="150" />
+          <el-table-column prop="funds_to" label="资金去向" min-width="90">
+            <template #default="scope">
+              {{ scope.row.funds_to === "" ? "--" : scope.row.funds_to }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="案管备注" min-width="150">
+            <template #default="scope">
+              {{ scope.row.remark === "" ? "--" : scope.row.remark }}
+            </template>
+          </el-table-column>
         </el-table-column>
         <el-table-column label="涉案款管理（财务部门）" align="center">
           <el-table-column prop="in_time" label="入库日期" min-width="150">
@@ -454,6 +461,8 @@ const getPropertyListAsync = async () => {
    
   } catch (error) {
     console.error('获取涉案财物列表失败', error)
+  } finally {
+    loading.value = false
   }
 }
 const deletePropertyAsync = async (id) => {
@@ -681,10 +690,28 @@ const handleFileChange = (file) => {
     reader.onload = async (e) => {
       try {
         const data = e.target.result
-        const workbook = XLSX.read(data, { type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd' })
+        // 修改XLSX读取选项，禁用自动日期转换
+        const workbook = XLSX.read(data, { 
+          type: 'array', 
+          cellDates: false, // 改为false，避免自动转换为Date对象
+          raw: true, // 使用原始值
+          dateNF: 'yyyy-mm-dd'
+        })
         const firstSheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[firstSheetName]
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+        
+        // 使用原始文本值读取数据
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+          header: 1,
+          raw: true, // 使用原始值
+          defval: ''
+        })
+
+        // 检查jsonData是否为空或undefined
+        if (!jsonData || !jsonData.length) {
+          ElMessage.error('Excel文件格式错误或没有数据')
+          return
+        }
 
         // 目标字段
         const targetFields = [
@@ -698,12 +725,20 @@ const handleFileChange = (file) => {
         // 1. 自动识别表头（假设表头在前两行之内）
         let headerRowIdx = 0
         let headerRow = jsonData[headerRowIdx]
+        
         // 如果第一行不是表头，尝试第二行
         if (!headerRow || headerRow.filter(Boolean).length < 3) {
           headerRowIdx = 1
           headerRow = jsonData[headerRowIdx]
+          
+          // 如果第二行也不是有效表头，报错退出
+          if (!headerRow || headerRow.filter(Boolean).length < 3) {
+            ElMessage.error('无法识别Excel表头，请检查文件格式')
+            return
+          }
         }
-        // 建立Excel表头与目标字段的映射关系（你可根据实际表头调整）
+        
+        // 建立Excel表头与目标字段的映射关系
         const excelToTargetMap = {
           '案件名称': 'name',
           '涉案物品入库': 'entry',
@@ -724,16 +759,29 @@ const handleFileChange = (file) => {
           '出库日期': 'out_time',
           '出库金额': 'out_amount',
           '出库去向': 'out_to',
-          '财务备注': 'remarks', // 如有第二个备注字段
+          '财务备注': 'remarks'
         }
 
         // 2. 生成表头索引映射
         const colMap = {}
-        headerRow.forEach((col, idx) => {
-          if (excelToTargetMap[col]) {
-            colMap[excelToTargetMap[col]] = idx
-          }
-        })
+        
+        // 确保headerRow存在且是数组
+        if (Array.isArray(headerRow)) {
+          headerRow.forEach((col, idx) => {
+            if (col && excelToTargetMap[col]) {
+              colMap[excelToTargetMap[col]] = idx
+            }
+          })
+        } else {
+          ElMessage.error('表头格式错误')
+          return
+        }
+        
+        // 检查是否至少映射了一些字段
+        if (Object.keys(colMap).length === 0) {
+          ElMessage.error('未找到匹配的表头字段，请检查Excel模板是否正确')
+          return
+        }
 
         // 3. 遍历数据行，统一映射
         const processedData = []
@@ -741,30 +789,97 @@ const handleFileChange = (file) => {
           const row = jsonData[i]
           // 跳过空行
           if (!row || row.length === 0 || row.every(cell => cell === undefined || cell === null || cell === '')) continue
+          
           const item = {}
+          let hasData = false // 检查行是否有实际数据
+          
           targetFields.forEach(field => {
             const idx = colMap[field]
-            let value = idx !== undefined ? row[idx] : (field.includes('amount') ? null : '')
+            let value = idx !== undefined && idx < row.length ? row[idx] : (field.includes('amount') ? null : '')
+            
             // 金额转数字
             if (['receive_amount','pay_amount','in_amount','out_amount'].includes(field)) {
-              value = value ? Number(value) : null
+              // 处理可能的数字字符串
+              if (value !== null && value !== '') {
+                if (typeof value === 'string') {
+                  // 移除可能的货币符号和千分位分隔符
+                  value = value.replace(/[^\d.-]/g, '');
+                }
+                value = Number(value) || null;
+              } else {
+                value = null;
+              }
+              if (value !== null) hasData = true;
+            } else if (value) {
+              hasData = true;
             }
-            // 日期格式化
+            
+            // 日期格式化 - 完全重写日期处理逻辑
             if (['entry_time','exit_time','receive_time','pay_time','in_time','out_time'].includes(field)) {
               if (value) {
-                value = value instanceof Date ? dayjs(value).format('YYYY-MM-DD') : value
+                try {
+                  // 处理Excel序列号日期（数字形式）
+                  if (typeof value === 'number') {
+                    // Excel日期是从1900年1月0日开始的天数
+                    // 使用XLSX库的日期转换函数
+                    const dateObj = XLSX.SSF.parse_date_code(value);
+                    if (dateObj) {
+                      value = `${dateObj.y}-${String(dateObj.m).padStart(2, '0')}-${String(dateObj.d).padStart(2, '0')}`;
+                    }
+                  } 
+                  // 处理字符串格式的日期
+                  else if (typeof value === 'string') {
+                    // 处理中文日期格式 "2020年10月30日"
+                    if (value.includes('年') && value.includes('月') && value.includes('日')) {
+                      const year = value.split('年')[0];
+                      const month = value.split('年')[1].split('月')[0];
+                      const day = value.split('月')[1].split('日')[0];
+                      value = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    } 
+                    // 处理斜杠日期格式 "2020/11/20"
+                    else if (value.includes('/')) {
+                      const parts = value.split('/');
+                      if (parts.length === 3) {
+                        value = `${parts[0]}-${String(parts[1]).padStart(2, '0')}-${String(parts[2]).padStart(2, '0')}`;
+                      }
+                    }
+                    // 处理点分隔的日期格式 "2020.11.20"
+                    else if (value.includes('.')) {
+                      const parts = value.split('.');
+                      if (parts.length === 3) {
+                        value = `${parts[0]}-${String(parts[1]).padStart(2, '0')}-${String(parts[2]).padStart(2, '0')}`;
+                      }
+                    }
+                    // 处理短横线分隔的日期格式 "2020-11-20"
+                    else if (value.includes('-')) {
+                      const parts = value.split('-');
+                      if (parts.length === 3) {
+                        value = `${parts[0]}-${String(parts[1]).padStart(2, '0')}-${String(parts[2]).padStart(2, '0')}`;
+                      }
+                    }
+                  }
+                } catch (err) {
+                  console.error('日期格式化错误:', err, value);
+                  // 保留原始值
+                }
               }
             }
+            
             item[field] = value
           })
-          processedData.push(item)
+          
+          // 只添加有实际数据的行
+          if (hasData) {
+            processedData.push(item)
+          }
         }
 
         if (processedData.length === 0) {
-          ElMessage.warning('Excel文件中没有数据')
+          ElMessage.warning('Excel文件中没有有效数据')
           return
         }
-        console.log(processedData)
+        
+        console.log('处理后的数据:', processedData)
 
         // 4. 批量上传
         const res = await batchCreateProperty(processedData)
@@ -776,13 +891,13 @@ const handleFileChange = (file) => {
         }
       } catch (error) {
         console.error('处理Excel文件失败：', error)
-        ElMessage.error('处理Excel文件失败')
+        ElMessage.error(`处理Excel文件失败: ${error.message || '未知错误'}`)
       }
     }
     reader.readAsArrayBuffer(file.raw)
   } catch (error) {
     console.error('文件上传失败：', error)
-    ElMessage.error('文件上传失败')
+    ElMessage.error(`文件上传失败: ${error.message || '未知错误'}`)
   }
 }
 const handleSizeChange = (size) => {
